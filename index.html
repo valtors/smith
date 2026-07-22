@@ -7,7 +7,7 @@
 <meta name="description" content="npm for MCP. install, compose, secure, and manage MCP servers.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -16,9 +16,9 @@
     font-family: "Inter", -apple-system, system-ui, sans-serif;
     overflow-x: hidden;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* particle canvas */
   #particles {
     position: fixed;
     inset: 0;
@@ -26,16 +26,14 @@
     pointer-events: none;
   }
 
-  /* content */
   .content {
     position: relative;
     z-index: 1;
-    max-width: 620px;
+    max-width: 640px;
     margin: 0 auto;
-    padding: 100px 24px 120px;
+    padding: 120px 24px 140px;
   }
 
-  /* nav */
   .nav {
     position: fixed;
     top: 28px;
@@ -64,20 +62,21 @@
     color: #f5f1ea;
   }
 
-  /* hero */
   .hook {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 22px;
-    font-weight: 400;
-    color: rgba(245,241,234,0.5);
-    margin-bottom: 60px;
-    line-height: 1.4;
+    font-family: "Inter", sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: #f5f1ea;
+    margin-bottom: 8px;
+    line-height: 1.3;
     opacity: 0;
     animation: fadeIn 0.8s ease 0.2s forwards;
   }
-  .hook .cursor {
+  .hook .accent {
     color: #d4843a;
-    font-weight: 700;
+  }
+  .hook .cursor {
     border-right: 2px solid #d4843a;
     animation: blink 1s step-end infinite;
   }
@@ -85,75 +84,97 @@
     0%,50% { border-color: #d4843a; }
     51%,100% { border-color: transparent; }
   }
+  .sub {
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #888;
+    margin-bottom: 64px;
+    line-height: 1.5;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.4s forwards;
+  }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* terminal banner */
-  .terminal-banner {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
-    color: rgba(245,241,234,0.7);
-    line-height: 1.5;
-    margin-bottom: 48px;
-    white-space: pre;
-    opacity: 0;
-    animation: fadeIn 0.8s ease 0.5s forwards;
-  }
-  .terminal-banner .dim { color: rgba(245,241,234,0.4); }
-
-  /* story */
-  .story {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 15px;
-    line-height: 1.7;
-  }
-  .agent-label {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    margin-top: 32px;
-    margin-bottom: 8px;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-  .agent-label.visible { opacity: 1; }
-  .agent-label:first-of-type { margin-top: 0; }
-  .agent-label.you { color: #d4843a; }
-  .agent-label.smith { color: #7ab583; }
-  .agent-label.agent { color: #7ab583; }
-  .line {
-    color: rgba(245,241,234,0.7);
-    margin-bottom: 2px;
-    opacity: 0;
-    transform: translateX(-8px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .line.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  .line.prompt { color: rgba(245,241,234,0.5); }
-  .line.tool { color: #7ab583; }
-  .line.tool .check { color: #d4843a; }
-  .line.reaction { color: rgba(245,241,234,0.8); font-style: italic; }
-
-  /* divider */
   .divider {
-    margin: 48px 0;
+    margin: 56px 0;
     border: none;
-    border-top: 1px solid rgba(212,132,58,0.15);
+    border-top: 1px solid rgba(212,132,58,0.12);
     width: 0;
     transition: width 0.8s ease;
   }
   .divider.visible { width: 100%; }
 
-  /* punchline */
+  .turn {
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .turn.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .speaker {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .speaker.you { color: #d4843a; }
+  .speaker.you::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: #d4843a;
+    border-radius: 50%;
+  }
+  .speaker.agent { color: #7ab583; }
+  .speaker.agent::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: #7ab583;
+    border-radius: 50%;
+  }
+  .msg {
+    font-family: "Inter", sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #ccc;
+  }
+  .msg p { margin-bottom: 4px; }
+  .msg .react {
+    color: #f5f1ea;
+    font-weight: 500;
+  }
+  .msg .code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    background: rgba(212,132,58,0.1);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: #d4843a;
+  }
+  .msg .check {
+    color: #d4843a;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    margin-right: 4px;
+  }
+
   .punchline-wrap {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.8s ease, transform 0.8s ease;
+    margin-top: 72px;
   }
   .punchline-wrap.visible {
     opacity: 1;
@@ -161,37 +182,34 @@
   }
   .punchline {
     font-family: "Inter", sans-serif;
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 32px;
+    font-weight: 700;
     letter-spacing: -1px;
     line-height: 1.25;
     margin-bottom: 16px;
-    margin-top: 60px;
   }
   .punchline .accent {
     color: #d4843a;
     font-style: italic;
   }
   .punchline-sub {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 14px;
-    color: rgba(245,241,234,0.5);
+    font-family: "Inter", sans-serif;
+    font-size: 17px;
+    color: #666;
     line-height: 1.6;
     margin-bottom: 48px;
   }
 
-  /* link */
   .link-out {
     font-family: "JetBrains Mono", monospace;
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 500;
-    letter-spacing: -2px;
+    letter-spacing: -1.5px;
     color: #d4843a;
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 4px;
     display: inline-block;
-    margin-top: 40px;
     opacity: 0;
     transform: translateY(16px);
     transition: opacity 0.6s ease, transform 0.6s ease, color 0.2s ease;
@@ -203,23 +221,22 @@
   .link-out:hover { color: #f5f1ea; }
 
   .footer-note {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
-    color: rgba(245,241,234,0.3);
-    margin-top: 60px;
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    color: #555;
+    margin-top: 56px;
     opacity: 0;
     transition: opacity 0.6s ease 0.3s;
   }
   .footer-note.visible { opacity: 1; }
 
-  /* mobile */
   @media (max-width: 640px) {
-    .content { padding: 80px 20px 100px; }
-    .hook { font-size: 18px; }
-    .story { font-size: 14px; }
-    .terminal-banner { font-size: 11px; }
-    .punchline { font-size: 22px; }
-    .link-out { font-size: 32px; }
+    .content { padding: 100px 20px 120px; }
+    .hook { font-size: 24px; }
+    .sub { font-size: 15px; }
+    .msg { font-size: 16px; }
+    .punchline { font-size: 26px; }
+    .link-out { font-size: 28px; }
   }
 </style>
 </head>
@@ -234,96 +251,163 @@
 
 <div class="content">
 
-  <div class="hook" id="hook">&gt; how do you install an <span class="cursor" id="cursor-word">MCP server</span></div>
+  <div class="hook">how do you install an <span class="accent">MCP server<span class="cursor">&nbsp;</span></span></div>
+  <div class="sub">copy this json block. paste it into your config. hope the version works. there's no package manager for MCP.</div>
 
-  <div class="terminal-banner" id="banner">  __
- / _|_ __ ___  ___
-| |_| '__/ _ \/ _ \
-|  _| | |  __/  __/
-|_| |_|  \___|\___|  v0.1
-
-  one binary. any agent.</div>
-
-  <div class="story" id="story-1">
-
-    <div class="agent-label you">you</div>
-    <div class="line">how do i install an MCP server?</div>
-
-    <div class="agent-label agent">agent</div>
-    <div class="line">you copy this json block and paste it</div>
-    <div class="line">into your config file. then find the</div>
-    <div class="line">right path. then hope the version works.</div>
-
-    <div class="line reaction">&gt; you're joking</div>
-
-    <div class="line">no. that's how everyone does it.</div>
-    <div class="line">there's no package manager for MCP.</div>
-
-    <div class="line reaction">&gt; npm made javascript installable. cargo made rust installable.</div>
-    <div class="line reaction">&gt; what makes an MCP server installable?</div>
-
-    <div class="line">nothing. right now, nothing.</div>
-
+  <div class="turn">
+    <div class="speaker you">you</div>
+    <div class="msg">
+      <p class="react">how do i install an MCP server?</p>
+    </div>
   </div>
 
-  <hr class="divider" id="div-1">
-
-  <div class="story" id="story-2">
-
-    <div class="agent-label you">you</div>
-    <div class="line">smith install @modelcontextprotocol/filesystem</div>
-
-    <div class="agent-label smith">smith</div>
-    <div class="line tool"><span class="check">+</span> installed: filesystem</div>
-    <div class="line">  npx -y @modelcontextprotocol/filesystem</div>
-
-    <div class="agent-label you">you</div>
-    <div class="line">smith install valtors/cairn</div>
-
-    <div class="line tool"><span class="check">+</span> installed: cairn</div>
-    <div class="line">  npx -y github:valtors/cairn</div>
-
-    <div class="agent-label you">you</div>
-    <div class="line">smith list</div>
-
-    <div class="line">[active] filesystem (default)</div>
-    <div class="line">[active] cairn (default)</div>
-
-    <div class="agent-label you">you</div>
-    <div class="line">smith secure filesystem</div>
-
-    <div class="line tool">filesystem: <span class="check">Safe</span></div>
-    <div class="line">  no issues found</div>
-
-    <div class="agent-label you">you</div>
-    <div class="line">smith compose</div>
-
-    <div class="line tool"><span class="check">+</span> smith compose: routing 2 servers on stdio</div>
-    <div class="line">  the agent sees one set of tools.</div>
-    <div class="line">  not two separate configs.</div>
-
-    <div class="line reaction">&gt; one command installed it. one command secured it.</div>
-    <div class="line reaction">&gt; one command started everything.</div>
-
-    <div class="line reaction">&gt; what about profiles?</div>
-
-    <div class="line">smith profile work. smith profile personal.</div>
-    <div class="line">one command switches your active servers.</div>
-    <div class="line">different tools for different projects.</div>
-
-    <div class="line reaction">&gt; and the registry?</div>
-
-    <div class="line">github-based. anyone can publish.</div>
-    <div class="line">smith search "filesystem" finds what</div>
-    <div class="line">you need. no walled garden.</div>
-
-    <div class="line reaction">&gt; this should already exist</div>
-
-    <div class="line">it didn't. now it does.</div>
-
+  <div class="turn">
+    <div class="speaker agent">agent</div>
+    <div class="msg">
+      <p>you copy this json block and paste it into your config file. then find the right path. then hope the version works.</p>
+    </div>
   </div>
 
-  <div class="punchline-wrap" id="punchline-wrap">
+  <div class="turn">
+    <div class="msg">
+      <p class="react">you're joking.</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p>no. that's how everyone does it. there's no package manager for MCP.</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p class="react">npm made javascript installable. cargo made rust installable. what makes an MCP server installable?</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p>nothing. right now, nothing.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="turn">
+    <div class="speaker you">you</div>
+    <div class="msg">
+      <p class="react">smith install <span class="code">@modelcontextprotocol/filesystem</span></p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker agent">smith</div>
+    <div class="msg">
+      <p><span class="check">+</span> installed: filesystem</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker you">you</div>
+    <div class="msg">
+      <p class="react">smith install <span class="code">valtors/cairn</span></p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker agent">smith</div>
+    <div class="msg">
+      <p><span class="check">+</span> installed: cairn</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker you">you</div>
+    <div class="msg">
+      <p class="react">smith list</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker agent">smith</div>
+    <div class="msg">
+      <p>[active] filesystem (default)</p>
+      <p>[active] cairn (default)</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker you">you</div>
+    <div class="msg">
+      <p class="react">smith secure filesystem</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker agent">smith</div>
+    <div class="msg">
+      <p><span class="check">filesystem: Safe</span> -- no issues found</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker you">you</div>
+    <div class="msg">
+      <p class="react">smith compose</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="speaker agent">smith</div>
+    <div class="msg">
+      <p><span class="check">+</span> routing 2 servers on stdio. the agent sees one set of tools. not two separate configs.</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p class="react">one command installed it. one command secured it. one command started everything.</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p class="react">what about profiles?</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p><span class="code">smith profile work</span>. <span class="code">smith profile personal</span>. one command switches your active servers. different tools for different projects.</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p class="react">and the registry?</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p>github-based. anyone can publish. <span class="code">smith search "filesystem"</span> finds what you need. no walled garden.</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p class="react">this should already exist.</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="msg">
+      <p>it didn't. now it does.</p>
+    </div>
+  </div>
+
+  <div class="punchline-wrap">
     <div class="punchline">
       npm made javascript installable.<br>
       cargo made rust installable.<br>
@@ -333,190 +417,129 @@
       one binary. any agent. MIT.
     </div>
 
-    <a href="https://github.com/valtors/smith" class="link-out" id="link">github</a>
+    <a href="https://github.com/valtors/smith" class="link-out">github</a>
 
-    <div class="footer-note" id="footer">
-      MIT · rust · one binary · valtors
+    <div class="footer-note">
+      MIT &middot; rust &middot; one binary &middot; valtors
     </div>
   </div>
 
 </div>
 
 <script>
-  /* =====================================================
-     PARTICLE NETWORK - forge sparks
-     dots = MCP servers, lines = composition routes
-     mouse repels like a magnetic field
-     ===================================================== */
   (function() {
     var canvas = document.getElementById('particles');
     var ctx = canvas.getContext('2d');
-    var W, H;
-    var mouse = { x: -999, y: -999 };
-    var dots = [];
-    var DOT_COUNT = 70;
-    var CONNECT_DIST = 140;
-    var MOUSE_DIST = 180;
+    var W, H, mouse = { x: -999, y: -999 }, dots = [];
+    var DOT_COUNT = 60, CONNECT_DIST = 130, MOUSE_DIST = 170;
     var ACCENT = { r: 212, g: 132, b: 58 };
     var SPARK = { r: 122, g: 181, b: 131 };
 
     function resize() {
       W = canvas.width = window.innerWidth;
       H = canvas.height = window.innerHeight;
-      DOT_COUNT = Math.min(80, Math.floor(W * H / 18000));
+      DOT_COUNT = Math.min(70, Math.floor(W * H / 20000));
     }
-
     function initDots() {
       dots = [];
       for (var i = 0; i < DOT_COUNT; i++) {
         dots.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: (Math.random() - 0.5) * 0.25,
-          r: Math.random() * 1.5 + 0.5,
-          baseOpacity: Math.random() * 0.3 + 0.06,
-          accent: Math.random() > 0.7,
-          pulse: Math.random() * Math.PI * 2,
-          pulseSpeed: 0.01 + Math.random() * 0.02
+          x: Math.random()*W, y: Math.random()*H,
+          vx: (Math.random()-0.5)*0.2, vy: (Math.random()-0.5)*0.2,
+          r: Math.random()*1.5+0.5,
+          baseOpacity: Math.random()*0.25+0.05,
+          accent: Math.random()>0.7,
+          pulse: Math.random()*Math.PI*2,
+          pulseSpeed: 0.008+Math.random()*0.015
         });
       }
     }
-
     function animate() {
-      ctx.clearRect(0, 0, W, H);
-
-      for (var i = 0; i < dots.length; i++) {
+      ctx.clearRect(0,0,W,H);
+      for (var i=0; i<dots.length; i++) {
         var d = dots[i];
-
         d.pulse += d.pulseSpeed;
-        var pulseFactor = (Math.sin(d.pulse) + 1) / 2;
-
-        d.x += d.vx;
-        d.y += d.vy;
-
-        if (d.x < 0) { d.x = 0; d.vx *= -1; }
-        if (d.x > W) { d.x = W; d.vx *= -1; }
-        if (d.y < 0) { d.y = 0; d.vy *= -1; }
-        if (d.y > H) { d.y = H; d.vy *= -1; }
-
-        var dx = d.x - mouse.x;
-        var dy = d.y - mouse.y;
-        var mdist = Math.sqrt(dx*dx + dy*dy);
-        var mFactor = 1;
-        if (mdist < MOUSE_DIST) {
-          mFactor = 1 + (1 - mdist / MOUSE_DIST) * 2;
-        }
-
-        var opacity = d.baseOpacity * (0.5 + pulseFactor * 0.5) * mFactor;
-        var color = d.accent ? ACCENT : SPARK;
-
+        var pf = (Math.sin(d.pulse)+1)/2;
+        d.x += d.vx; d.y += d.vy;
+        if (d.x<0){d.x=0;d.vx*=-1;} if (d.x>W){d.x=W;d.vx*=-1;}
+        if (d.y<0){d.y=0;d.vy*=-1;} if (d.y>H){d.y=H;d.vy*=-1;}
+        var dx=d.x-mouse.x, dy=d.y-mouse.y, md=Math.sqrt(dx*dx+dy*dy);
+        var mf = md<MOUSE_DIST ? 1+(1-md/MOUSE_DIST)*2 : 1;
+        var op = d.baseOpacity*(0.5+pf*0.5)*mf;
+        var c = d.accent?ACCENT:SPARK;
         ctx.beginPath();
-        ctx.arc(d.x, d.y, d.r * mFactor, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + opacity + ')';
+        ctx.arc(d.x,d.y,d.r*mf,0,Math.PI*2);
+        ctx.fillStyle='rgba('+c.r+','+c.g+','+c.b+','+op+')';
         ctx.fill();
-
-        for (var j = i + 1; j < dots.length; j++) {
-          var d2 = dots[j];
-          var ddx = d.x - d2.x;
-          var ddy = d.y - d2.y;
-          var dist = Math.sqrt(ddx*ddx + ddy*ddy);
-
-          if (dist < CONNECT_DIST) {
-            var lineOpacity = (1 - dist / CONNECT_DIST) * 0.06 * mFactor;
-            var isAccent = d.accent || d2.accent;
-            var lc = isAccent ? ACCENT : SPARK;
+        for (var j=i+1;j<dots.length;j++) {
+          var d2=dots[j], ddx=d.x-d2.x, ddy=d.y-d2.y, dist=Math.sqrt(ddx*ddx+ddy*ddy);
+          if (dist<CONNECT_DIST) {
+            var lo=(1-dist/CONNECT_DIST)*0.06*mf;
+            var lc=(d.accent||d2.accent)?ACCENT:SPARK;
             ctx.beginPath();
-            ctx.moveTo(d.x, d.y);
-            ctx.lineTo(d2.x, d2.y);
-            ctx.strokeStyle = 'rgba(' + lc.r + ',' + lc.g + ',' + lc.b + ',' + lineOpacity + ')';
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
+            ctx.moveTo(d.x,d.y); ctx.lineTo(d2.x,d2.y);
+            ctx.strokeStyle='rgba('+lc.r+','+lc.g+','+lc.b+','+lo+')';
+            ctx.lineWidth=0.5; ctx.stroke();
           }
         }
-
-        if (mdist < MOUSE_DIST) {
-          var lineOpacity2 = (1 - mdist / MOUSE_DIST) * 0.12;
+        if (md<MOUSE_DIST) {
+          var lo2=(1-md/MOUSE_DIST)*0.12;
           ctx.beginPath();
-          ctx.moveTo(d.x, d.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = 'rgba(' + ACCENT.r + ',' + ACCENT.g + ',' + ACCENT.b + ',' + lineOpacity2 + ')';
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
+          ctx.moveTo(d.x,d.y); ctx.lineTo(mouse.x,mouse.y);
+          ctx.strokeStyle='rgba('+ACCENT.r+','+ACCENT.g+','+ACCENT.b+','+lo2+')';
+          ctx.lineWidth=0.5; ctx.stroke();
         }
       }
-
       requestAnimationFrame(animate);
     }
-
-    window.addEventListener('mousemove', function(e) {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
-    window.addEventListener('mouseleave', function() {
-      mouse.x = -999;
-      mouse.y = -999;
-    });
-    window.addEventListener('touchmove', function(e) {
-      if (e.touches[0]) {
-        mouse.x = e.touches[0].clientX;
-        mouse.y = e.touches[0].clientY;
-      }
-    });
-    window.addEventListener('touchend', function() {
-      mouse.x = -999;
-      mouse.y = -999;
-    });
-
-    resize();
-    initDots();
-    animate();
-    window.addEventListener('resize', function() { resize(); initDots(); });
+    window.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY;});
+    window.addEventListener('mouseleave',function(){mouse.x=-999;mouse.y=-999;});
+    window.addEventListener('touchmove',function(e){if(e.touches[0]){mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;}});
+    window.addEventListener('touchend',function(){mouse.x=-999;mouse.y=-999;});
+    resize(); initDots(); animate();
+    window.addEventListener('resize',function(){resize();initDots();});
   })();
 
-  /* =====================================================
-     SCROLL REVEAL - lines appear as you read
-     ===================================================== */
   (function() {
-    var observer = new IntersectionObserver(function(entries) {
+    var obs = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
         if (e.isIntersecting) {
-          var lines = e.target.querySelectorAll('.line');
-          var labels = e.target.querySelectorAll('.agent-label');
-          var lineIndex = 0;
-
-          function revealNext() {
-            if (lineIndex >= lines.length) return;
-            var line = lines[lineIndex];
-
-            var prevLabel = null;
-            for (var i = 0; i < labels.length; i++) {
-              if (labels[i].nextElementSibling === line) {
-                prevLabel = labels[i];
-                break;
-              }
-            }
-            if (prevLabel) prevLabel.classList.add('visible');
-
-            line.classList.add('visible');
-            lineIndex++;
-            setTimeout(revealNext, 80);
-          }
-          revealNext();
+          var turns = e.target.querySelectorAll('.turn');
+          turns.forEach(function(t, i) {
+            setTimeout(function() { t.classList.add('visible'); }, i * 100);
+          });
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 });
 
-    document.querySelectorAll('.story').forEach(function(s) { observer.observe(s); });
+    var content = document.querySelector('.content');
+    var children = Array.from(content.children);
+    var sections = [];
+    var current = [];
+    children.forEach(function(child) {
+      if (child.classList && child.classList.contains('divider')) {
+        if (current.length) sections.push(current);
+        current = [];
+      } else {
+        current.push(child);
+      }
+    });
+    if (current.length) sections.push(current);
 
-    var divObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) e.target.classList.add('visible');
-      });
+    sections.forEach(function(s) {
+      var wrapper = document.createElement('div');
+      wrapper.className = 'story-section';
+      s.forEach(function(el) { content.removeChild(el); wrapper.appendChild(el); });
+      content.appendChild(wrapper);
+      obs.observe(wrapper);
+    });
+
+    var divObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.5 });
-    document.querySelectorAll('.divider').forEach(function(d) { divObserver.observe(d); });
+    document.querySelectorAll('.divider').forEach(function(d) { divObs.observe(d); });
 
-    var punchObserver = new IntersectionObserver(function(entries) {
+    var punchObs = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
         if (e.isIntersecting) {
           e.target.classList.add('visible');
@@ -527,7 +550,7 @@
         }
       });
     }, { threshold: 0.2 });
-    document.querySelectorAll('.punchline-wrap').forEach(function(p) { punchObserver.observe(p); });
+    document.querySelectorAll('.punchline-wrap').forEach(function(p) { punchObs.observe(p); });
   })();
 </script>
 
