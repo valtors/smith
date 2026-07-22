@@ -17,29 +17,29 @@
   body{font-family:'Inter',sans-serif;background:#0e0c0a;color:#e8e2d8;line-height:1.65;font-size:17px;overflow-x:hidden;}
   #bg-canvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;}
   .content{position:relative;z-index:1;}
-  .hero{text-align:center;padding:140px 24px 80px;max-width:680px;margin:0 auto;}
-  .hero h1{font-size:42px;font-weight:700;letter-spacing:-1.5px;margin-bottom:16px;color:#f5f0e8;}
-  .hero h1 em{font-style:italic;color:#d4843a;background:rgba(212,132,58,0.12);padding:0 4px;border-radius:3px;}
-  .hero p{font-size:17px;color:#998d7e;max-width:480px;margin:0 auto;}
-  .story{max-width:620px;margin:0 auto;padding:40px 24px;}
-  .story-section{margin-bottom:64px;opacity:0;}
-  .divider{height:1px;background:#2a251f;margin:48px auto;width:0;}
-  .turn{margin-bottom:36px;}
-  .speaker{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-  .speaker .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .speaker .label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6b6055;}
-  .msg{font-size:17px;line-height:1.65;color:#c4b9a8;}
-  .msg code{font-family:'JetBrains Mono',monospace;font-size:14px;background:rgba(212,132,58,0.12);padding:1px 5px;border-radius:3px;color:#d4843a;}
-  .punchline{text-align:center;padding:64px 24px;max-width:620px;margin:0 auto;opacity:0;}
-  .punchline h2{font-size:28px;font-weight:600;color:#f5f0e8;margin-bottom:32px;line-height:1.4;}
-  .punchline h2 em{font-style:italic;color:#d4843a;}
-  .punchline a{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f5f0e8;text-decoration:none;border-bottom:2px solid #d4843a;padding-bottom:4px;transition:color .2s;}
-  .punchline a:hover{color:#d4843a;}
-  .footer{text-align:center;padding:40px 24px 80px;font-size:13px;color:#5a5048;font-family:'JetBrains Mono',monospace;opacity:0;}
+  .hero{text-align:center;padding:160px 24px 100px;max-width:680px;margin:0 auto;}
+  .hero h1{font-size:48px;font-weight:700;letter-spacing:-2px;margin-bottom:18px;color:#f5f0e8;}
+  .hero h1 em{font-style:italic;color:#d4843a;background:rgba(212,132,58,0.15);padding:0 6px;border-radius:4px;}
+  .hero p{font-size:18px;color:#998d7e;max-width:480px;margin:0 auto;}
+  .story{max-width:620px;margin:0 auto;padding:20px 24px;}
+  .story-section{margin-bottom:64px;}
+  .divider{height:1px;background:#3a3028;margin:48px auto;max-width:500px;}
+  .turn{margin-bottom:40px;}
+  .speaker{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .speaker .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .speaker .label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#7a6f60;}
+  .msg{font-size:18px;line-height:1.7;color:#c4b9a8;}
+  .msg code{font-family:'JetBrains Mono',monospace;font-size:15px;background:rgba(212,132,58,0.15);padding:2px 6px;border-radius:4px;color:#d4843a;}
+  .punchline{text-align:center;padding:80px 24px;max-width:620px;margin:0 auto;}
+  .punchline h2{font-size:32px;font-weight:600;color:#f5f0e8;margin-bottom:36px;line-height:1.35;}
+  .punchline h2 em{font-style:italic;color:#d4843a;background:rgba(212,132,58,0.15);padding:0 6px;border-radius:4px;}
+  .punchline a{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f5f0e8;text-decoration:none;border-bottom:2px solid #d4843a;padding-bottom:4px;transition:color .2s,border-color .2s;}
+  .punchline a:hover{color:#d4843a;border-color:#f5f0e8;}
+  .footer{text-align:center;padding:40px 24px 100px;font-size:13px;color:#5a5048;font-family:'JetBrains Mono',monospace;}
   .dot-you{background:#d4843a;}
   .dot-agent{background:#5a8a6e;}
   .dot-smith{background:#d4843a;}
-  @media(max-width:600px){.hero h1{font-size:32px;}.story,.punchline{padding:32px 16px;}.hero{padding:100px 16px 60px;}}
+  @media(max-width:600px){.hero h1{font-size:34px;}.story,.punchline{padding:32px 16px;}.hero{padding:120px 16px 80px;}.punchline h2{font-size:26px;}}
 </style>
 </head>
 <body>
@@ -51,89 +51,48 @@
   </div>
   <div class="story">
     <div class="story-section" id="s1">
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div>
-        <div class="msg">i want to add a filesystem MCP server to my agent.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div>
-        <div class="msg">ok. open your config file. add this json block. set the command path. add arguments. set environment variables. restart the server.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div>
-        <div class="msg">that's it?</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div>
-        <div class="msg">that's it. every time. for every server.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div>
-        <div class="msg">you're joking.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div>
-        <div class="msg">no. that's how everyone does it.</div>
-      </div>
+      <div class="turn"><div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div><div class="msg">i want to add a filesystem MCP server to my agent.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div><div class="msg">ok. open your config file. add this json block. set the command path. add arguments. set environment variables. restart the server.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div><div class="msg">that's it?</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div><div class="msg">that's it. every time. for every server.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div><div class="msg">you're joking.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div><div class="msg">no. that's how everyone does it.</div></div>
     </div>
-    <div class="divider" id="d1"></div>
+    <div class="divider"></div>
     <div class="story-section" id="s2">
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div>
-        <div class="msg"><code>smith install @modelcontextprotocol/filesystem</code></div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div>
-        <div class="msg">done. it's in your config. verified. ready.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div>
-        <div class="msg"><code>smith list</code> shows what's installed. <code>smith secure filesystem</code> runs static analysis.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div>
-        <div class="msg"><code>smith compose</code> merges multiple servers into one endpoint. one connection. many tools.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div>
-        <div class="msg">profiles for work, home, production. switch with one command.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div>
-        <div class="msg">this should already exist.</div>
-      </div>
-      <div class="turn">
-        <div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div>
-        <div class="msg">it didn't. now it does.</div>
-      </div>
+      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg"><code>smith install @modelcontextprotocol/filesystem</code></div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg">done. it's in your config. verified. ready.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg"><code>smith list</code> shows what's installed. <code>smith secure filesystem</code> runs static analysis.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg"><code>smith compose</code> merges multiple servers into one endpoint. one connection. many tools.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg">profiles for work, home, production. switch with one command.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div><div class="msg">this should already exist.</div></div>
+      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg">it didn't. now it does.</div></div>
     </div>
   </div>
-  <div class="punchline" id="punchline">
+  <div class="punchline">
     <h2>npm made javascript installable. cargo made rust installable. <em>smith makes MCP installable.</em></h2>
     <a href="https://github.com/valtors/smith">github</a>
   </div>
-  <div class="footer" id="footer">mit license. rust. one binary. no config files to edit.</div>
+  <div class="footer">mit license. rust. one binary. no config files to edit.</div>
 </div>
 <script>
-var smithScene, smithRenderer, smithCamera, smithPoints, smithMat, smithClock;
-var smithMouse = {x: 0, y: 0};
-var smithTarget = {x: 0, y: 0};
-var smithScrollY = 0;
+var sScene, sRenderer, sCamera, sPoints, sMat, sLines, sClock;
+var sMouse = {x:0, y:0}, sTarget = {x:0, y:0}, sScrollY = 0;
 
-function initSmithThree() {
+function initSmith() {
   if (typeof THREE === 'undefined') return;
   var canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
 
-  smithScene = new THREE.Scene();
-  smithCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-  smithCamera.position.z = 60;
+  sScene = new THREE.Scene();
+  sCamera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 1000);
+  sCamera.position.z = 50;
 
-  smithRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-  smithRenderer.setSize(window.innerWidth, window.innerHeight);
-  smithRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  sRenderer = new THREE.WebGLRenderer({canvas:canvas, alpha:true, antialias:true});
+  sRenderer.setSize(window.innerWidth, window.innerHeight);
+  sRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  var COUNT = 180;
+  var COUNT = 120;
   var positions = new Float32Array(COUNT * 3);
   var colors = new Float32Array(COUNT * 3);
   var sizes = new Float32Array(COUNT);
@@ -144,15 +103,15 @@ function initSmithThree() {
   var cGreen = new THREE.Color('#5a8a6e');
 
   for (var i = 0; i < COUNT; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 140;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 90;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+    positions[i*3] = (Math.random() - 0.5) * 120;
+    positions[i*3+1] = (Math.random() - 0.5) * 80;
+    positions[i*3+2] = (Math.random() - 0.5) * 40;
     var r = Math.random();
-    var c = r > 0.7 ? cAmber : (r > 0.45 ? cOrange : cGreen);
-    colors[i * 3] = c.r;
-    colors[i * 3 + 1] = c.g;
-    colors[i * 3 + 2] = c.b;
-    sizes[i] = Math.random() * 2.5 + 0.8;
+    var c = r > 0.6 ? cAmber : (r > 0.35 ? cOrange : cGreen);
+    colors[i*3] = c.r;
+    colors[i*3+1] = c.g;
+    colors[i*3+2] = c.b;
+    sizes[i] = Math.random() * 3 + 1.5;
     phases[i] = Math.random() * Math.PI * 2;
   }
 
@@ -162,111 +121,112 @@ function initSmithThree() {
   geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
   geo.setAttribute('phase', new THREE.BufferAttribute(phases, 1));
 
-  var vshader = [
-    'attribute float size;',
-    'attribute float phase;',
-    'uniform float uTime;',
-    'uniform vec2 uMouse;',
-    'uniform float uPixelRatio;',
-    'varying vec3 vColor;',
-    'varying float vAlpha;',
-    'void main() {',
-    '  vColor = color;',
-    '  vec3 pos = position;',
-    '  float drift = sin(uTime * 0.3 + phase) * 1.5;',
-    '  pos.y += drift;',
-    '  pos.x += cos(uTime * 0.2 + phase) * 0.8;',
-    '  vec2 toMouse = uMouse - pos.xy;',
-    '  float md = length(toMouse);',
-    '  float pull = smoothstep(30.0, 0.0, md) * 4.0;',
-    '  pos.xy -= normalize(toMouse + 0.001) * pull;',
-    '  vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);',
-    '  gl_Position = projectionMatrix * mvPos;',
-    '  float pulse = (sin(uTime * 0.8 + phase) + 1.0) * 0.5;',
-    '  gl_PointSize = size * (1.0 + pulse * 0.4 + pull * 0.5) * uPixelRatio * (40.0 / -mvPos.z);',
-    '  vAlpha = 0.35 + pulse * 0.15 + pull * 0.3;',
-    '}'
-  ].join('\n');
-
-  var fshader = [
-    'varying vec3 vColor;',
-    'varying float vAlpha;',
-    'void main() {',
-    '  vec2 uv = gl_PointCoord - 0.5;',
-    '  float d = length(uv);',
-    '  if (d > 0.5) discard;',
-    '  float glow = 1.0 - smoothstep(0.0, 0.5, d);',
-    '  glow = pow(glow, 1.5);',
-    '  gl_FragColor = vec4(vColor, glow * vAlpha);',
-    '}'
-  ].join('\n');
-
-  smithMat = new THREE.ShaderMaterial({
+  sMat = new THREE.ShaderMaterial({
     uniforms: {
-      uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(0, 0) },
-      uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }
+      uTime: {value:0},
+      uMouse: {value: new THREE.Vector2(0, 0)},
+      uPixelRatio: {value: Math.min(window.devicePixelRatio, 2)}
     },
-    vertexShader: vshader,
-    fragmentShader: fshader,
+    vertexShader: [
+      'attribute float size;',
+      'attribute float phase;',
+      'uniform float uTime;',
+      'uniform vec2 uMouse;',
+      'uniform float uPixelRatio;',
+      'varying vec3 vColor;',
+      'varying float vAlpha;',
+      'void main() {',
+      '  vColor = color;',
+      '  vec3 pos = position;',
+      '  pos.y += sin(uTime * 0.3 + phase) * 2.0;',
+      '  pos.x += cos(uTime * 0.2 + phase) * 1.5;',
+      '  vec2 toMouse = uMouse - pos.xy;',
+      '  float md = length(toMouse);',
+      '  float pull = smoothstep(35.0, 0.0, md) * 5.0;',
+      '  pos.xy -= normalize(toMouse + 0.001) * pull;',
+      '  vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);',
+      '  gl_Position = projectionMatrix * mvPos;',
+      '  float pulse = (sin(uTime * 0.8 + phase) + 1.0) * 0.5;',
+      '  gl_PointSize = size * (1.5 + pulse * 0.6 + pull * 0.8) * uPixelRatio * (35.0 / -mvPos.z);',
+      '  vAlpha = 0.5 + pulse * 0.2 + pull * 0.3;',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'varying vec3 vColor;',
+      'varying float vAlpha;',
+      'void main() {',
+      '  vec2 uv = gl_PointCoord - 0.5;',
+      '  float d = length(uv);',
+      '  if (d > 0.5) discard;',
+      '  float glow = 1.0 - smoothstep(0.0, 0.5, d);',
+      '  glow = pow(glow, 1.5);',
+      '  gl_FragColor = vec4(vColor, glow * vAlpha);',
+      '}'
+    ].join('\n'),
     transparent: true,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
     vertexColors: true
   });
 
-  smithPoints = new THREE.Points(geo, smithMat);
-  smithScene.add(smithPoints);
+  sPoints = new THREE.Points(geo, sMat);
+  sScene.add(sPoints);
 
-  var lineGeo = new THREE.BufferGeometry();
-  var linePositions = new Float32Array(COUNT * COUNT * 3 * 2);
-  var li = 0;
+  var linePositions = [];
+  var lineAlphas = [];
   for (var a = 0; a < COUNT; a++) {
     for (var b = a + 1; b < COUNT; b++) {
-      var dx = positions[a * 3] - positions[b * 3];
-      var dy = positions[a * 3 + 1] - positions[b * 3 + 1];
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 18) {
-        linePositions[li * 3] = positions[a * 3];
-        linePositions[li * 3 + 1] = positions[a * 3 + 1];
-        linePositions[li * 3 + 2] = positions[a * 3 + 2];
-        li++;
-        linePositions[li * 3] = positions[b * 3];
-        linePositions[li * 3 + 1] = positions[b * 3 + 1];
-        linePositions[li * 3 + 2] = positions[b * 3 + 2];
-        li++;
+      var dx = positions[a*3] - positions[b*3];
+      var dy = positions[a*3+1] - positions[b*3+1];
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 16) {
+        linePositions.push(positions[a*3], positions[a*3+1], positions[a*3+2]);
+        linePositions.push(positions[b*3], positions[b*3+1], positions[b*3+2]);
+        lineAlphas.push(1.0 - dist / 16);
+        lineAlphas.push(1.0 - dist / 16);
       }
     }
   }
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions.slice(0, li * 3), 3));
-  var lineMat = new THREE.LineBasicMaterial({
-    color: 0xd4843a,
+  var lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+  lineGeo.setAttribute('alpha', new THREE.Float32BufferAttribute(lineAlphas, 1));
+  var lineMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: {value:0} },
+    vertexShader: [
+      'attribute float alpha;',
+      'varying float vAlpha;',
+      'void main() {',
+      '  vAlpha = alpha;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'varying float vAlpha;',
+      'void main() {',
+      '  gl_FragColor = vec4(0.83, 0.52, 0.23, vAlpha * 0.3);',
+      '}'
+    ].join('\n'),
     transparent: true,
-    opacity: 0.06,
-    blending: THREE.AdditiveBlending
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
   });
-  var lines = new THREE.LineSegments(lineGeo, lineMat);
-  smithScene.add(lines);
+  sLines = new THREE.LineSegments(lineGeo, lineMat);
+  sScene.add(sLines);
 
-  smithClock = new THREE.Clock();
+  sClock = new THREE.Clock();
 
   window.addEventListener('mousemove', function(e) {
-    smithTarget.x = (e.clientX / window.innerWidth - 0.5) * 140;
-    smithTarget.y = -(e.clientY / window.innerHeight - 0.5) * 90;
+    sTarget.x = (e.clientX / window.innerWidth - 0.5) * 120;
+    sTarget.y = -(e.clientY / window.innerHeight - 0.5) * 80;
   });
-  window.addEventListener('mouseleave', function() {
-    smithTarget.x = 0;
-    smithTarget.y = 0;
-  });
-  window.addEventListener('scroll', function() {
-    smithScrollY = window.scrollY;
-  });
+  window.addEventListener('mouseleave', function() { sTarget.x = 0; sTarget.y = 0; });
+  window.addEventListener('scroll', function() { sScrollY = window.scrollY; });
   window.addEventListener('resize', function() {
-    smithCamera.aspect = window.innerWidth / window.innerHeight;
-    smithCamera.updateProjectionMatrix();
-    smithRenderer.setSize(window.innerWidth, window.innerHeight);
-    smithRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    smithMat.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);
+    sCamera.aspect = window.innerWidth / window.innerHeight;
+    sCamera.updateProjectionMatrix();
+    sRenderer.setSize(window.innerWidth, window.innerHeight);
+    sRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    sMat.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);
   });
 
   animateSmith();
@@ -274,66 +234,92 @@ function initSmithThree() {
 
 function animateSmith() {
   requestAnimationFrame(animateSmith);
-  if (!smithMat || !smithRenderer) return;
-  var t = smithClock.getElapsedTime();
-  smithMat.uniforms.uTime.value = t;
-  smithMouse.x += (smithTarget.x - smithMouse.x) * 0.04;
-  smithMouse.y += (smithTarget.y - smithMouse.y) * 0.04;
-  smithMat.uniforms.uMouse.value.x = smithMouse.x;
-  smithMat.uniforms.uMouse.value.y = smithMouse.y;
-  smithCamera.position.y = -smithScrollY * 0.01;
-  smithCamera.position.x = smithMouse.x * 0.03;
-  smithCamera.lookAt(0, smithCamera.position.y, 60);
-  smithPoints.rotation.y = t * 0.02;
-  smithRenderer.render(smithScene, smithCamera);
+  if (!sMat || !sRenderer) return;
+  var t = sClock.getElapsedTime();
+  sMat.uniforms.uTime.value = t;
+  sMouse.x += (sTarget.x - sMouse.x) * 0.05;
+  sMouse.y += (sTarget.y - sMouse.y) * 0.05;
+  sMat.uniforms.uMouse.value.x = sMouse.x;
+  sMat.uniforms.uMouse.value.y = sMouse.y;
+  sCamera.position.y = -sScrollY * 0.015;
+  sCamera.position.x = sMouse.x * 0.04;
+  sCamera.lookAt(0, sCamera.position.y, 50);
+  sPoints.rotation.y = t * 0.03;
+  sLines.rotation.y = t * 0.03;
+  sRenderer.render(sScene, sCamera);
 }
 
-initSmithThree();
+initSmith();
 </script>
 <script>
 gsap.registerPlugin(ScrollTrigger);
 
-window.addEventListener('load', function() {
-  gsap.from('.hero h1', { y: 20, opacity: 0, duration: 0.8, ease: 'power2.out' });
-  gsap.from('.hero p', { y: 20, opacity: 0, duration: 0.8, delay: 0.15, ease: 'power2.out' });
+document.addEventListener('DOMContentLoaded', function() {
+  gsap.from('.hero h1', {y: 30, opacity: 0, duration: 1, ease: 'power3.out'});
+  gsap.from('.hero p', {y: 20, opacity: 0, duration: 0.8, delay: 0.3, ease: 'power3.out'});
 
-  gsap.to('#s1', {
-    opacity: 1, duration: 0.6, ease: 'power2.out',
-    scrollTrigger: { trigger: '#s1', start: 'top 80%' }
-  });
-  gsap.to('#s2', {
-    opacity: 1, duration: 0.6, ease: 'power2.out',
-    scrollTrigger: { trigger: '#s2', start: 'top 80%' }
-  });
-  gsap.to('#d1', {
-    width: '80%', duration: 1, ease: 'power2.inOut',
-    scrollTrigger: { trigger: '#d1', start: 'top 85%' }
-  });
-
-  gsap.from('#s1 .turn', {
-    opacity: 0, x: -20, duration: 0.4, stagger: 0.08, ease: 'power2.out',
-    scrollTrigger: { trigger: '#s1', start: 'top 75%' }
-  });
-  gsap.from('#s2 .turn', {
-    opacity: 0, x: -20, duration: 0.4, stagger: 0.08, ease: 'power2.out',
-    scrollTrigger: { trigger: '#s2', start: 'top 75%' }
+  gsap.utils.toArray('.turn').forEach(function(turn, i) {
+    gsap.from(turn, {
+      opacity: 0,
+      y: 40,
+      duration: 0.6,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: turn,
+        start: 'top 88%',
+        toggleActions: 'play none none none'
+      }
+    });
   });
 
-  gsap.to('#punchline', {
-    opacity: 1, duration: 0.8, ease: 'power2.out',
-    scrollTrigger: { trigger: '#punchline', start: 'top 70%' }
+  gsap.fromTo('.divider', {
+    scaleX: 0,
+    opacity: 0
+  }, {
+    scaleX: 1,
+    opacity: 1,
+    duration: 1.2,
+    ease: 'power2.inOut',
+    scrollTrigger: {
+      trigger: '.divider',
+      start: 'top 85%',
+      toggleActions: 'play none none none'
+    }
   });
-  gsap.from('#punchline h2', {
-    y: 20, opacity: 0, duration: 0.6, delay: 0.1, ease: 'power2.out',
-    scrollTrigger: { trigger: '#punchline', start: 'top 70%' }
+
+  gsap.from('.punchline h2', {
+    opacity: 0,
+    y: 40,
+    duration: 0.8,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: '.punchline',
+      start: 'top 75%',
+      toggleActions: 'play none none none'
+    }
   });
-  gsap.from('#punchline a', {
-    y: 10, opacity: 0, duration: 0.5, delay: 0.3, ease: 'power2.out',
-    scrollTrigger: { trigger: '#punchline', start: 'top 70%' }
+
+  gsap.from('.punchline a', {
+    opacity: 0,
+    y: 20,
+    duration: 0.6,
+    delay: 0.3,
+    ease: 'power2.out',
+    scrollTrigger: {
+      trigger: '.punchline',
+      start: 'top 75%',
+      toggleActions: 'play none none none'
+    }
   });
-  gsap.to('#footer', {
-    opacity: 1, duration: 0.6, ease: 'power2.out',
-    scrollTrigger: { trigger: '#footer', start: 'top 90%' }
+
+  gsap.from('.footer', {
+    opacity: 0,
+    duration: 0.6,
+    scrollTrigger: {
+      trigger: '.footer',
+      start: 'top 95%',
+      toggleActions: 'play none none none'
+    }
   });
 });
 </script>
