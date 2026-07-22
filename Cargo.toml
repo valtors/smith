@@ -1,0 +1,33 @@
+[package]
+name = "smith"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "npm for MCP. install, compose, secure, and manage MCP servers."
+
+[[bin]]
+name = "smith"
+path = "bin/smith/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive", "env"] }
+smith-config = { path = "crates/config" }
+smith-compose = { path = "crates/compose" }
+smith-install = { path = "crates/install" }
+smith-secure = { path = "crates/secure" }
+smith-profile = { path = "crates/profile" }
+smith-registry = { path = "crates/registry" }
+
+[workspace]
+members = [
+    "crates/config",
+    "crates/install",
+    "crates/compose",
+    "crates/secure",
+    "crates/profile",
+    "crates/registry",
+]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
