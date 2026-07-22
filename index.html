@@ -7,73 +7,243 @@
 <meta name="description" content="npm for MCP. install, compose, secure MCP servers.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{font-family:'Inter',sans-serif;background:#0e0c0a;color:#e8e2d8;line-height:1.65;font-size:17px;overflow-x:hidden;}
+  :root{
+    --bg:#0e0c0a;
+    --text:#e8e2d8;
+    --muted:#7a6f60;
+    --accent:#d4843a;
+    --line:#2a251f;
+    --surface:#161310;
+    --amber:#d4843a;
+    --orange:#e89645;
+    --green:#5a8a6e;
+  }
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
   #bg-canvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;}
   .content{position:relative;z-index:1;}
-  .hero{text-align:center;padding:160px 24px 100px;max-width:680px;margin:0 auto;}
-  .hero h1{font-size:48px;font-weight:700;letter-spacing:-2px;margin-bottom:18px;color:#f5f0e8;}
-  .hero h1 em{font-style:italic;color:#d4843a;background:rgba(212,132,58,0.15);padding:0 6px;border-radius:4px;}
-  .hero p{font-size:18px;color:#998d7e;max-width:480px;margin:0 auto;}
-  .story{max-width:620px;margin:0 auto;padding:20px 24px;}
-  .story-section{margin-bottom:64px;}
-  .divider{height:1px;background:#3a3028;margin:48px auto;max-width:500px;}
-  .turn{margin-bottom:40px;}
-  .speaker{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-  .speaker .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-  .speaker .label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#7a6f60;}
-  .msg{font-size:18px;line-height:1.7;color:#c4b9a8;}
-  .msg code{font-family:'JetBrains Mono',monospace;font-size:15px;background:rgba(212,132,58,0.15);padding:2px 6px;border-radius:4px;color:#d4843a;}
-  .punchline{text-align:center;padding:80px 24px;max-width:620px;margin:0 auto;}
-  .punchline h2{font-size:32px;font-weight:600;color:#f5f0e8;margin-bottom:36px;line-height:1.35;}
-  .punchline h2 em{font-style:italic;color:#d4843a;background:rgba(212,132,58,0.15);padding:0 6px;border-radius:4px;}
-  .punchline a{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f5f0e8;text-decoration:none;border-bottom:2px solid #d4843a;padding-bottom:4px;transition:color .2s,border-color .2s;}
-  .punchline a:hover{color:#d4843a;border-color:#f5f0e8;}
-  .footer{text-align:center;padding:40px 24px 100px;font-size:13px;color:#5a5048;font-family:'JetBrains Mono',monospace;}
-  .dot-you{background:#d4843a;}
-  .dot-agent{background:#5a8a6e;}
-  .dot-smith{background:#d4843a;}
-  @media(max-width:600px){.hero h1{font-size:34px;}.story,.punchline{padding:32px 16px;}.hero{padding:120px 16px 80px;}.punchline h2{font-size:26px;}}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:rgba(14,12,10,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+  nav .logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:18px;letter-spacing:-0.5px;color:var(--text);}
+  nav .logo .mark{width:12px;height:12px;background:var(--amber);border-radius:2px;transform:rotate(45deg);}
+  nav .links{display:flex;gap:28px;align-items:center;}
+  nav .links a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;}
+  nav .links a:hover{color:var(--text);}
+  nav .cta{background:var(--amber);color:#0e0c0a;padding:8px 20px;font-size:14px;font-weight:600;border-radius:0;text-decoration:none;transition:opacity .2s;}
+  nav .cta:hover{opacity:0.85;}
+
+  .hero{padding:140px 32px 80px;max-width:960px;margin:0 auto;text-align:left;}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--surface);border:1px solid var(--line);border-radius:100px;font-size:13px;color:var(--muted);font-weight:500;margin-bottom:32px;}
+  .chip .pulse{width:6px;height:6px;border-radius:50%;background:var(--amber);animation:pulse-dot 2s ease-in-out infinite;}
+  @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .hero h1{font-size:64px;font-weight:500;letter-spacing:-3px;line-height:1.05;margin-bottom:24px;color:#f5f0e8;}
+  .hero h1 .accent{color:var(--amber);font-style:italic;}
+  .hero p{font-size:20px;color:var(--muted);max-width:560px;line-height:1.5;margin-bottom:40px;}
+  .hero-actions{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+  .btn-primary{background:var(--amber);color:#0e0c0a;padding:12px 28px;font-size:15px;font-weight:600;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:opacity .2s;border-radius:0;}
+  .btn-primary:hover{opacity:0.85;}
+  .btn-code{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--surface);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text);border-radius:0;}
+  .btn-code span{color:var(--muted);}
+
+  .logos{padding:40px 32px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;}
+  .logos p{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;font-weight:600;}
+  .logos .row{display:flex;justify-content:center;gap:48px;align-items:center;flex-wrap:wrap;}
+  .logos .row span{font-size:18px;font-weight:600;color:#4a4038;letter-spacing:-0.5px;}
+
+  .section{padding:100px 32px;max-width:960px;margin:0 auto;}
+  .section-label{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .section-label .num{color:var(--amber);}
+  .section h2{font-size:40px;font-weight:500;letter-spacing:-2px;line-height:1.1;margin-bottom:16px;color:#f5f0e8;}
+  .section h2 .accent{color:var(--amber);font-style:italic;}
+  .section > p{font-size:18px;color:var(--muted);max-width:560px;line-height:1.5;margin-bottom:48px;}
+
+  .features{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:0;}
+  .feature{padding:40px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transition:background .2s;}
+  .feature:nth-child(2n){border-right:none;}
+  .feature:nth-last-child(-n+2){border-bottom:none;}
+  .feature:hover{background:var(--surface);}
+  .feature .icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:20px;color:var(--amber);}
+  .feature h3{font-size:18px;font-weight:600;margin-bottom:8px;letter-spacing:-0.3px;color:#f5f0e8;}
+  .feature p{font-size:15px;color:var(--muted);line-height:1.5;}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:0;margin-top:48px;}
+  .compare > div{padding:40px;background:var(--bg);}
+  .compare .col-legacy{background:#120f0d;}
+  .compare .col-ours{background:var(--surface);}
+  .compare h3{font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px;font-weight:700;}
+  .compare .col-ours h3{color:var(--amber);}
+  .compare p{font-size:16px;color:var(--text);line-height:1.5;margin-bottom:20px;}
+  .compare ul{list-style:none;}
+  .compare li{font-size:15px;color:var(--muted);padding:6px 0;padding-left:24px;position:relative;line-height:1.4;}
+  .compare .col-legacy li:before{content:'x';position:absolute;left:0;color:#3a3028;font-weight:700;}
+  .compare .col-ours li:before{content:'+';position:absolute;left:0;color:var(--green);font-weight:700;}
+
+  .code-block{background:#000;color:#e8e2d8;padding:32px;border-radius:0;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.7;overflow-x:auto;margin-top:48px;position:relative;border:1px solid var(--line);}
+  .code-block .lang{position:absolute;top:12px;right:16px;font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;}
+  .code-block .comment{color:#6b7280;}
+  .code-block .cmd{color:var(--amber);}
+  .code-block .str{color:var(--green);}
+  .code-block .kw{color:var(--orange);}
+
+  .punchline{padding:120px 32px;text-align:center;max-width:800px;margin:0 auto;}
+  .punchline h2{font-size:48px;font-weight:500;letter-spacing:-2px;line-height:1.1;margin-bottom:40px;color:#f5f0e8;}
+  .punchline h2 .accent{color:var(--amber);font-style:italic;}
+  .punchline .actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+
+  footer{padding:40px 32px;border-top:1px solid var(--line);text-align:center;}
+  footer p{font-size:13px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+
+  @media(max-width:768px){
+    .hero h1{font-size:40px;}
+    .section h2{font-size:28px;}
+    .punchline h2{font-size:32px;}
+    .features{grid-template-columns:1fr;}
+    .feature{border-right:none;}
+    .compare{grid-template-columns:1fr;}
+    nav .links{display:none;}
+    .hero,.section,.punchline{padding:60px 20px;}
+  }
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 <div class="content">
+  <nav>
+    <div class="logo"><div class="mark"></div>smith</div>
+    <div class="links">
+      <a href="#features">features</a>
+      <a href="#compare">vs manual config</a>
+      <a href="https://github.com/valtors/smith">github</a>
+      <a href="https://github.com/valtors/smith" class="cta">star on github</a>
+    </div>
+  </nav>
+
   <div class="hero">
-    <h1>how do you install an <em>MCP server?</em></h1>
-    <p>copy a json blob. paste it into a config file. restart everything. hope it works.</p>
-  </div>
-  <div class="story">
-    <div class="story-section" id="s1">
-      <div class="turn"><div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div><div class="msg">i want to add a filesystem MCP server to my agent.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div><div class="msg">ok. open your config file. add this json block. set the command path. add arguments. set environment variables. restart the server.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div><div class="msg">that's it?</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div><div class="msg">that's it. every time. for every server.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div><div class="msg">you're joking.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-agent"></span><span class="label">agent</span></div><div class="msg">no. that's how everyone does it.</div></div>
-    </div>
-    <div class="divider"></div>
-    <div class="story-section" id="s2">
-      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg"><code>smith install @modelcontextprotocol/filesystem</code></div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg">done. it's in your config. verified. ready.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg"><code>smith list</code> shows what's installed. <code>smith secure filesystem</code> runs static analysis.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg"><code>smith compose</code> merges multiple servers into one endpoint. one connection. many tools.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg">profiles for work, home, production. switch with one command.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-you"></span><span class="label">you</span></div><div class="msg">this should already exist.</div></div>
-      <div class="turn"><div class="speaker"><span class="dot dot-smith"></span><span class="label">smith</span></div><div class="msg">it didn't. now it does.</div></div>
+    <div class="chip"><span class="pulse"></span> npm for MCP, not another registry</div>
+    <h1>install MCP servers <span class="accent">like packages</span></h1>
+    <p>stop editing json configs by hand. smith installs, composes, and secures MCP servers. one binary. zero config files. rust.</p>
+    <div class="hero-actions">
+      <a href="https://github.com/valtors/smith" class="btn-primary">start building</a>
+      <div class="btn-code"><span>$</span> cargo install smith</div>
     </div>
   </div>
+
+  <div class="logos">
+    <p>works with every MCP client</p>
+    <div class="row">
+      <span>claude</span>
+      <span>cursor</span>
+      <span>codex</span>
+      <span>opencode</span>
+      <span>any mcp client</span>
+    </div>
+  </div>
+
+  <div class="section" id="features">
+    <div class="section-label"><span class="num">01</span> features</div>
+    <h2>six tools. <span class="accent">one binary.</span></h2>
+    <p>focused commands for the entire MCP server lifecycle. install, compose, secure, profile, search, remove.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="icon">+</div>
+        <h3>install</h3>
+        <p>one command. smith parses the package, writes the config, verifies the server starts. no json editing.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">=</div>
+        <h3>compose</h3>
+        <p>merge multiple MCP servers into one endpoint. one connection, many tools. automatic json-rpc multiplexing.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">!</div>
+        <h3>secure</h3>
+        <p>static analysis on every server before it runs. detects dangerous patterns, env leaks, unsafe file access.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">@</div>
+        <h3>profiles</h3>
+        <p>separate configs for work, home, production. switch profiles with one command. no symlink hacks.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">*</div>
+        <h3>registry</h3>
+        <p>github-based package index. no separate server. search and discover servers from the community.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">-</div>
+        <h3>remove</h3>
+        <p>clean uninstall. removes config entries, stops processes, frees ports. no orphaned servers.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="compare">
+    <div class="section-label"><span class="num">02</span> vs manual config</div>
+    <h2>stop editing json. <span class="accent">start shipping.</span></h2>
+    <p>every MCP server install is the same ritual: open config, paste json, set paths, restart, hope. smith does it in one command.</p>
+    <div class="compare">
+      <div class="col-legacy">
+        <h3>manual config</h3>
+        <p>copy a json blob. paste it into a config file. restart everything. hope it works.</p>
+        <ul>
+          <li>edit json by hand every time</li>
+          <li>no security checks before running</li>
+          <li>one server per connection</li>
+          <li>profiles via symlink hacks</li>
+          <li>no search, no discovery</li>
+        </ul>
+      </div>
+      <div class="col-ours">
+        <h3>smith</h3>
+        <p>one command. installed, verified, ready. compose multiple servers into one endpoint.</p>
+        <ul>
+          <li>one command install and remove</li>
+          <li>static security analysis built in</li>
+          <li>compose merges servers into one</li>
+          <li>first-class profile switching</li>
+          <li>github-based registry search</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="lang">bash</span>
+<span class="comment"># install a server</span>
+<span class="cmd">smith install</span> @modelcontextprotocol/filesystem
+
+<span class="comment"># see what's installed</span>
+<span class="cmd">smith list</span>
+<span class="kw">-></span> filesystem (running) | git (stopped) | memory (running)
+
+<span class="comment"># run security check</span>
+<span class="cmd">smith secure</span> filesystem
+<span class="kw">-></span> 2 warnings: env access, wildcard path
+
+<span class="comment"># compose 3 servers into one</span>
+<span class="cmd">smith compose</span> filesystem git memory <span class="str">--port 3000</span>
+
+<span class="comment"># switch to work profile</span>
+<span class="cmd">smith profile switch</span> work
+    </div>
+  </div>
+
   <div class="punchline">
-    <h2>npm made javascript installable. cargo made rust installable. <em>smith makes MCP installable.</em></h2>
-    <a href="https://github.com/valtors/smith">github</a>
+    <h2>npm made javascript installable. cargo made rust installable. <span class="accent">smith makes MCP installable.</span></h2>
+    <div class="actions">
+      <a href="https://github.com/valtors/smith" class="btn-primary">star on github</a>
+      <div class="btn-code"><span>$</span> cargo install smith</div>
+    </div>
   </div>
-  <div class="footer">mit license. rust. one binary. no config files to edit.</div>
+
+  <footer>
+    <p>mit license. rust. one binary. no config files to edit.</p>
+  </footer>
 </div>
 <script>
 var sScene, sRenderer, sCamera, sPoints, sMat, sLines, sClock;
@@ -92,7 +262,7 @@ function initSmith() {
   sRenderer.setSize(window.innerWidth, window.innerHeight);
   sRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  var COUNT = 120;
+  var COUNT = 100;
   var positions = new Float32Array(COUNT * 3);
   var colors = new Float32Array(COUNT * 3);
   var sizes = new Float32Array(COUNT);
@@ -107,11 +277,11 @@ function initSmith() {
     positions[i*3+1] = (Math.random() - 0.5) * 80;
     positions[i*3+2] = (Math.random() - 0.5) * 40;
     var r = Math.random();
-    var c = r > 0.6 ? cAmber : (r > 0.35 ? cOrange : cGreen);
+    var c = r > 0.6 ? cAmber : (r > 0.3 ? cOrange : cGreen);
     colors[i*3] = c.r;
     colors[i*3+1] = c.g;
     colors[i*3+2] = c.b;
-    sizes[i] = Math.random() * 3 + 1.5;
+    sizes[i] = Math.random() * 2.5 + 1;
     phases[i] = Math.random() * Math.PI * 2;
   }
 
@@ -138,17 +308,17 @@ function initSmith() {
       'void main() {',
       '  vColor = color;',
       '  vec3 pos = position;',
-      '  pos.y += sin(uTime * 0.3 + phase) * 2.0;',
-      '  pos.x += cos(uTime * 0.2 + phase) * 1.5;',
+      '  pos.y += sin(uTime * 0.3 + phase) * 1.5;',
+      '  pos.x += cos(uTime * 0.2 + phase) * 1.0;',
       '  vec2 toMouse = uMouse - pos.xy;',
       '  float md = length(toMouse);',
-      '  float pull = smoothstep(35.0, 0.0, md) * 5.0;',
+      '  float pull = smoothstep(30.0, 0.0, md) * 4.0;',
       '  pos.xy -= normalize(toMouse + 0.001) * pull;',
       '  vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);',
       '  gl_Position = projectionMatrix * mvPos;',
       '  float pulse = (sin(uTime * 0.8 + phase) + 1.0) * 0.5;',
-      '  gl_PointSize = size * (1.5 + pulse * 0.6 + pull * 0.8) * uPixelRatio * (35.0 / -mvPos.z);',
-      '  vAlpha = 0.7 + pulse * 0.2 + pull * 0.3;',
+      '  gl_PointSize = size * (1.5 + pulse * 0.5 + pull * 0.6) * uPixelRatio * (35.0 / -mvPos.z);',
+      '  vAlpha = 0.5 + pulse * 0.2 + pull * 0.25;',
       '}'
     ].join('\n'),
     fragmentShader: [
@@ -179,11 +349,11 @@ function initSmith() {
       var dx = positions[a*3] - positions[b*3];
       var dy = positions[a*3+1] - positions[b*3+1];
       var dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 16) {
+      if (dist < 15) {
         linePositions.push(positions[a*3], positions[a*3+1], positions[a*3+2]);
         linePositions.push(positions[b*3], positions[b*3+1], positions[b*3+2]);
-        lineAlphas.push(1.0 - dist / 16);
-        lineAlphas.push(1.0 - dist / 16);
+        lineAlphas.push(1.0 - dist / 15);
+        lineAlphas.push(1.0 - dist / 15);
       }
     }
   }
@@ -241,11 +411,11 @@ function animateSmith() {
   sMouse.y += (sTarget.y - sMouse.y) * 0.05;
   sMat.uniforms.uMouse.value.x = sMouse.x;
   sMat.uniforms.uMouse.value.y = sMouse.y;
-  sCamera.position.y = -sScrollY * 0.015;
-  sCamera.position.x = sMouse.x * 0.04;
+  sCamera.position.y = -sScrollY * 0.012;
+  sCamera.position.x = sMouse.x * 0.03;
   sCamera.lookAt(0, sCamera.position.y, 50);
-  sPoints.rotation.y = t * 0.03;
-  sLines.rotation.y = t * 0.03;
+  sPoints.rotation.y = t * 0.02;
+  sLines.rotation.y = t * 0.02;
   sRenderer.render(sScene, sCamera);
 }
 
@@ -255,71 +425,45 @@ initSmith();
 gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener('DOMContentLoaded', function() {
-  gsap.from('.hero h1', {y: 30, opacity: 0, duration: 1, ease: 'power3.out'});
+  gsap.from('.chip', {y: 20, opacity: 0, duration: 0.6, ease: 'power2.out'});
+  gsap.from('.hero h1', {y: 30, opacity: 0, duration: 1, delay: 0.1, ease: 'power3.out'});
   gsap.from('.hero p', {y: 20, opacity: 0, duration: 0.8, delay: 0.3, ease: 'power3.out'});
+  gsap.from('.hero-actions', {y: 20, opacity: 0, duration: 0.6, delay: 0.5, ease: 'power3.out'});
+  gsap.from('.logos', {opacity: 0, duration: 0.8, delay: 0.6, ease: 'power2.out'});
 
-  gsap.utils.toArray('.turn').forEach(function(turn, i) {
-    gsap.from(turn, {
-      opacity: 0,
-      y: 40,
-      duration: 0.6,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: turn,
-        start: 'top 88%',
-        toggleActions: 'play none none none'
-      }
+  gsap.utils.toArray('.feature').forEach(function(f, i) {
+    gsap.from(f, {
+      opacity: 0, y: 30, duration: 0.5, ease: 'power2.out',
+      scrollTrigger: { trigger: f, start: 'top 88%' }
     });
   });
 
-  gsap.fromTo('.divider', {
-    scaleX: 0,
-    opacity: 0
-  }, {
-    scaleX: 1,
-    opacity: 1,
-    duration: 1.2,
-    ease: 'power2.inOut',
-    scrollTrigger: {
-      trigger: '.divider',
-      start: 'top 85%',
-      toggleActions: 'play none none none'
-    }
+  gsap.from('.compare .col-legacy', {
+    opacity: 0, x: -30, duration: 0.6, ease: 'power2.out',
+    scrollTrigger: { trigger: '.compare', start: 'top 80%' }
+  });
+  gsap.from('.compare .col-ours', {
+    opacity: 0, x: 30, duration: 0.6, delay: 0.1, ease: 'power2.out',
+    scrollTrigger: { trigger: '.compare', start: 'top 80%' }
+  });
+
+  gsap.from('.code-block', {
+    opacity: 0, y: 30, duration: 0.8, ease: 'power2.out',
+    scrollTrigger: { trigger: '.code-block', start: 'top 85%' }
   });
 
   gsap.from('.punchline h2', {
-    opacity: 0,
-    y: 40,
-    duration: 0.8,
-    ease: 'power3.out',
-    scrollTrigger: {
-      trigger: '.punchline',
-      start: 'top 75%',
-      toggleActions: 'play none none none'
-    }
+    opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
+    scrollTrigger: { trigger: '.punchline', start: 'top 75%' }
+  });
+  gsap.from('.punchline .actions', {
+    opacity: 0, y: 20, duration: 0.6, delay: 0.2, ease: 'power2.out',
+    scrollTrigger: { trigger: '.punchline', start: 'top 75%' }
   });
 
-  gsap.from('.punchline a', {
-    opacity: 0,
-    y: 20,
-    duration: 0.6,
-    delay: 0.3,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: '.punchline',
-      start: 'top 75%',
-      toggleActions: 'play none none none'
-    }
-  });
-
-  gsap.from('.footer', {
-    opacity: 0,
-    duration: 0.6,
-    scrollTrigger: {
-      trigger: '.footer',
-      start: 'top 95%',
-      toggleActions: 'play none none none'
-    }
+  gsap.from('footer', {
+    opacity: 0, duration: 0.6,
+    scrollTrigger: { trigger: 'footer', start: 'top 95%' }
   });
 });
 </script>
