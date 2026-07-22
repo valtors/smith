@@ -18,21 +18,12 @@
     min-height: 100vh;
   }
 
-  /* ascii background */
-  #ascii-bg {
+  /* particle canvas */
+  #particles {
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    overflow: hidden;
-    opacity: 0.04;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    line-height: 11px;
-    letter-spacing: -1px;
-    color: #d4843a;
-    white-space: pre;
-    user-select: none;
   }
 
   /* content */
@@ -59,6 +50,11 @@
     width: 9px; height: 9px;
     background: #d4843a;
     border-radius: 1px;
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
   }
   .nav-name {
     font-family: "JetBrains Mono", monospace;
@@ -76,10 +72,22 @@
     color: rgba(245,241,234,0.5);
     margin-bottom: 60px;
     line-height: 1.4;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.2s forwards;
   }
   .hook .cursor {
     color: #d4843a;
     font-weight: 700;
+    border-right: 2px solid #d4843a;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink {
+    0%,50% { border-color: #d4843a; }
+    51%,100% { border-color: transparent; }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* terminal banner */
@@ -90,6 +98,8 @@
     line-height: 1.5;
     margin-bottom: 48px;
     white-space: pre;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.5s forwards;
   }
   .terminal-banner .dim { color: rgba(245,241,234,0.4); }
 
@@ -105,7 +115,10 @@
     letter-spacing: 0.5px;
     margin-top: 32px;
     margin-bottom: 8px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
+  .agent-label.visible { opacity: 1; }
   .agent-label:first-of-type { margin-top: 0; }
   .agent-label.you { color: #d4843a; }
   .agent-label.smith { color: #7ab583; }
@@ -113,6 +126,13 @@
   .line {
     color: rgba(245,241,234,0.7);
     margin-bottom: 2px;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .line.visible {
+    opacity: 1;
+    transform: translateX(0);
   }
   .line.prompt { color: rgba(245,241,234,0.5); }
   .line.tool { color: #7ab583; }
@@ -124,9 +144,21 @@
     margin: 48px 0;
     border: none;
     border-top: 1px solid rgba(212,132,58,0.15);
+    width: 0;
+    transition: width 0.8s ease;
   }
+  .divider.visible { width: 100%; }
 
   /* punchline */
+  .punchline-wrap {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .punchline-wrap.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
   .punchline {
     font-family: "Inter", sans-serif;
     font-size: 28px;
@@ -160,6 +192,13 @@
     text-underline-offset: 4px;
     display: inline-block;
     margin-top: 40px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease, color 0.2s ease;
+  }
+  .link-out.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   .link-out:hover { color: #f5f1ea; }
 
@@ -168,7 +207,10 @@
     font-size: 12px;
     color: rgba(245,241,234,0.3);
     margin-top: 60px;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.3s;
   }
+  .footer-note.visible { opacity: 1; }
 
   /* mobile */
   @media (max-width: 640px) {
@@ -188,13 +230,13 @@
   <div class="nav-name">smith</div>
 </div>
 
-<canvas id="ascii-bg"></canvas>
+<canvas id="particles"></canvas>
 
 <div class="content">
 
-  <div class="hook">&gt; how do you install an <span class="cursor">MCP server</span>?</div>
+  <div class="hook" id="hook">&gt; how do you install an <span class="cursor" id="cursor-word">MCP server</span></div>
 
-  <div class="terminal-banner">  __
+  <div class="terminal-banner" id="banner">  __
  / _|_ __ ___  ___
 | |_| '__/ _ \/ _ \
 |  _| | |  __/  __/
@@ -202,7 +244,7 @@
 
   one binary. any agent.</div>
 
-  <div class="story">
+  <div class="story" id="story-1">
 
     <div class="agent-label you">you</div>
     <div class="line">how do i install an MCP server?</div>
@@ -224,9 +266,9 @@
 
   </div>
 
-  <hr class="divider">
+  <hr class="divider" id="div-1">
 
-  <div class="story">
+  <div class="story" id="story-2">
 
     <div class="agent-label you">you</div>
     <div class="line">smith install @modelcontextprotocol/filesystem</div>
@@ -281,56 +323,211 @@
 
   </div>
 
-  <div class="punchline">
-    npm made javascript installable.<br>
-    cargo made rust installable.<br>
-    <span class="accent">smith</span> makes MCP installable.
-  </div>
-  <div class="punchline-sub">
-    one binary. any agent. MIT.
-  </div>
+  <div class="punchline-wrap" id="punchline-wrap">
+    <div class="punchline">
+      npm made javascript installable.<br>
+      cargo made rust installable.<br>
+      <span class="accent">smith</span> makes MCP installable.
+    </div>
+    <div class="punchline-sub">
+      one binary. any agent. MIT.
+    </div>
 
-  <a href="https://github.com/valtors/smith" class="link-out">github</a>
+    <a href="https://github.com/valtors/smith" class="link-out" id="link">github</a>
 
-  <div class="footer-note">
-    MIT · rust · one binary · valtors
+    <div class="footer-note" id="footer">
+      MIT · rust · one binary · valtors
+    </div>
   </div>
 
 </div>
 
 <script>
-  // generate ascii art background
+  /* =====================================================
+     PARTICLE NETWORK - forge sparks
+     dots = MCP servers, lines = composition routes
+     mouse repels like a magnetic field
+     ===================================================== */
   (function() {
-    var canvas = document.getElementById('ascii-bg');
+    var canvas = document.getElementById('particles');
     var ctx = canvas.getContext('2d');
-    var chars = ['+', '*', '#', '=', '%', '@', '-', '|', '/', '\\', '.', ':', '~'];
-    var cols, rows, cellSize = 11;
+    var W, H;
+    var mouse = { x: -999, y: -999 };
+    var dots = [];
+    var DOT_COUNT = 70;
+    var CONNECT_DIST = 140;
+    var MOUSE_DIST = 180;
+    var ACCENT = { r: 212, g: 132, b: 58 };
+    var SPARK = { r: 122, g: 181, b: 131 };
 
     function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      cols = Math.ceil(canvas.width / cellSize) + 1;
-      rows = Math.ceil(canvas.height / cellSize) + 1;
-      draw();
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      DOT_COUNT = Math.min(80, Math.floor(W * H / 18000));
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = '11px "JetBrains Mono", monospace';
-      ctx.fillStyle = '#d4843a';
-      ctx.textBaseline = 'top';
-      for (var y = 0; y < rows; y++) {
-        for (var x = 0; x < cols; x++) {
-          if (Math.random() > 0.7) {
-            var ch = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(ch, x * cellSize, y * cellSize);
-          }
-        }
+    function initDots() {
+      dots = [];
+      for (var i = 0; i < DOT_COUNT; i++) {
+        dots.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          r: Math.random() * 1.5 + 0.5,
+          baseOpacity: Math.random() * 0.3 + 0.06,
+          accent: Math.random() > 0.7,
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: 0.01 + Math.random() * 0.02
+        });
       }
     }
 
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i];
+
+        d.pulse += d.pulseSpeed;
+        var pulseFactor = (Math.sin(d.pulse) + 1) / 2;
+
+        d.x += d.vx;
+        d.y += d.vy;
+
+        if (d.x < 0) { d.x = 0; d.vx *= -1; }
+        if (d.x > W) { d.x = W; d.vx *= -1; }
+        if (d.y < 0) { d.y = 0; d.vy *= -1; }
+        if (d.y > H) { d.y = H; d.vy *= -1; }
+
+        var dx = d.x - mouse.x;
+        var dy = d.y - mouse.y;
+        var mdist = Math.sqrt(dx*dx + dy*dy);
+        var mFactor = 1;
+        if (mdist < MOUSE_DIST) {
+          mFactor = 1 + (1 - mdist / MOUSE_DIST) * 2;
+        }
+
+        var opacity = d.baseOpacity * (0.5 + pulseFactor * 0.5) * mFactor;
+        var color = d.accent ? ACCENT : SPARK;
+
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r * mFactor, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + opacity + ')';
+        ctx.fill();
+
+        for (var j = i + 1; j < dots.length; j++) {
+          var d2 = dots[j];
+          var ddx = d.x - d2.x;
+          var ddy = d.y - d2.y;
+          var dist = Math.sqrt(ddx*ddx + ddy*ddy);
+
+          if (dist < CONNECT_DIST) {
+            var lineOpacity = (1 - dist / CONNECT_DIST) * 0.06 * mFactor;
+            var isAccent = d.accent || d2.accent;
+            var lc = isAccent ? ACCENT : SPARK;
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d2.x, d2.y);
+            ctx.strokeStyle = 'rgba(' + lc.r + ',' + lc.g + ',' + lc.b + ',' + lineOpacity + ')';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+
+        if (mdist < MOUSE_DIST) {
+          var lineOpacity2 = (1 - mdist / MOUSE_DIST) * 0.12;
+          ctx.beginPath();
+          ctx.moveTo(d.x, d.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = 'rgba(' + ACCENT.r + ',' + ACCENT.g + ',' + ACCENT.b + ',' + lineOpacity2 + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('mousemove', function(e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    window.addEventListener('mouseleave', function() {
+      mouse.x = -999;
+      mouse.y = -999;
+    });
+    window.addEventListener('touchmove', function(e) {
+      if (e.touches[0]) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+      }
+    });
+    window.addEventListener('touchend', function() {
+      mouse.x = -999;
+      mouse.y = -999;
+    });
+
     resize();
-    window.addEventListener('resize', resize);
+    initDots();
+    animate();
+    window.addEventListener('resize', function() { resize(); initDots(); });
+  })();
+
+  /* =====================================================
+     SCROLL REVEAL - lines appear as you read
+     ===================================================== */
+  (function() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          var lines = e.target.querySelectorAll('.line');
+          var labels = e.target.querySelectorAll('.agent-label');
+          var lineIndex = 0;
+
+          function revealNext() {
+            if (lineIndex >= lines.length) return;
+            var line = lines[lineIndex];
+
+            var prevLabel = null;
+            for (var i = 0; i < labels.length; i++) {
+              if (labels[i].nextElementSibling === line) {
+                prevLabel = labels[i];
+                break;
+              }
+            }
+            if (prevLabel) prevLabel.classList.add('visible');
+
+            line.classList.add('visible');
+            lineIndex++;
+            setTimeout(revealNext, 80);
+          }
+          revealNext();
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.story').forEach(function(s) { observer.observe(s); });
+
+    var divObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.divider').forEach(function(d) { divObserver.observe(d); });
+
+    var punchObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          var link = e.target.querySelector('.link-out');
+          var footer = e.target.querySelector('.footer-note');
+          if (link) setTimeout(function() { link.classList.add('visible'); }, 400);
+          if (footer) setTimeout(function() { footer.classList.add('visible'); }, 800);
+        }
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('.punchline-wrap').forEach(function(p) { punchObserver.observe(p); });
   })();
 </script>
 
