@@ -148,7 +148,7 @@ function initSmith() {
       '  gl_Position = projectionMatrix * mvPos;',
       '  float pulse = (sin(uTime * 0.8 + phase) + 1.0) * 0.5;',
       '  gl_PointSize = size * (1.5 + pulse * 0.6 + pull * 0.8) * uPixelRatio * (35.0 / -mvPos.z);',
-      '  vAlpha = 0.5 + pulse * 0.2 + pull * 0.3;',
+      '  vAlpha = 0.7 + pulse * 0.2 + pull * 0.3;',
       '}'
     ].join('\n'),
     fragmentShader: [
@@ -203,7 +203,7 @@ function initSmith() {
     fragmentShader: [
       'varying float vAlpha;',
       'void main() {',
-      '  gl_FragColor = vec4(0.83, 0.52, 0.23, vAlpha * 0.3);',
+      '  gl_FragColor = vec4(0.83, 0.52, 0.23, vAlpha * 0.5);',
       '}'
     ].join('\n'),
     transparent: true,
