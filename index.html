@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>smith — npm for MCP</title>
+<meta name="description" content="the package manager for MCP servers. install, compose, secure, and manage. one binary.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg: #0e0c0a;
+    --ink: #f5f1ea;
+    --muted: #8a8278;
+    --accent: #d4843a;
+    --accent-bg: rgba(212,132,58,0.15);
+    --line: #2a2520;
+    --code-bg: #1a1614;
+    --code-fg: #d4c9b5;
+    --safe: #7ab583;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Geist", -apple-system, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* nav */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(14,12,10,0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 16px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 15px; letter-spacing: -0.3px;
+  }
+  .nav-brand .dot {
+    width: 10px; height: 10px; background: var(--accent); border-radius: 2px;
+  }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a { font-size: 14px; color: var(--muted); transition: color 0.15s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--accent); color: var(--bg);
+    padding: 8px 18px; border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+  }
+
+  /* hero */
+  .hero {
+    padding: 140px 48px 80px;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero-label {
+    font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: 64px; font-weight: 600; letter-spacing: -2.5px; line-height: 1.05;
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    background: var(--accent-bg);
+    padding: 0 6px; border-radius: 4px;
+  }
+  .hero p {
+    font-size: 18px; color: var(--muted); max-width: 560px;
+    margin: 0 auto 36px; line-height: 1.55;
+  }
+  .hero-actions {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .hero-actions a {
+    padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 500;
+  }
+  .hero-actions .primary { background: var(--accent); color: var(--bg); }
+  .hero-actions .secondary { border: 1px solid var(--line); color: var(--ink); }
+  .hero-meta {
+    margin-top: 24px; font-size: 12px; color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* sections */
+  .section {
+    padding: 80px 48px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .section h2 {
+    font-size: 38px; font-weight: 600; letter-spacing: -1.3px; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .section h2 em {
+    font-style: italic; background: var(--accent-bg); padding: 0 6px; border-radius: 4px;
+  }
+  .section p {
+    font-size: 17px; color: var(--muted); line-height: 1.55; max-width: 580px;
+  }
+
+  /* terminal demo */
+  .terminal {
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    max-width: 680px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .terminal-bar {
+    background: #14110f;
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .terminal-bar .tb {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .terminal-bar .tb.r { background: #e06c5a; }
+  .terminal-bar .tb.y { background: #d4a23a; }
+  .terminal-bar .tb.g { background: #7ab583; }
+  .terminal-body {
+    padding: 20px 24px;
+    font-family: "Geist Mono", monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--code-fg);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .terminal-body .prompt { color: var(--accent); }
+  .terminal-body .flag { color: var(--safe); }
+  .terminal-body .comment { color: #6b655a; }
+  .terminal-body .key { color: #c9a96e; }
+
+  /* features grid */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .feat {
+    padding: 36px 32px;
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
+  .feat:nth-child(even) { border-right: none; }
+  .feat-num {
+    font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .feat h3 {
+    font-size: 18px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 8px;
+  }
+  .feat p {
+    font-size: 14px; color: var(--muted); line-height: 1.5;
+  }
+
+  /* code section */
+  .code-section {
+    padding: 80px 48px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: #14110f;
+  }
+  .code-inner {
+    max-width: 680px; margin: 0 auto;
+  }
+  .code-label {
+    font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px 28px;
+    font-family: "Geist Mono", monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--code-fg);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code-block .prompt { color: var(--accent); }
+  .code-block .flag { color: var(--safe); }
+  .code-block .comment { color: #6b655a; }
+  .code-block .key { color: #c9a96e; }
+
+  /* CTA */
+  .cta {
+    padding: 100px 48px;
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .cta h2 {
+    font-size: 38px; font-weight: 600; letter-spacing: -1.3px; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .cta h2 em {
+    font-style: italic; background: var(--accent-bg); padding: 0 6px; border-radius: 4px;
+  }
+  .cta p {
+    font-size: 16px; color: var(--muted); margin-bottom: 32px;
+  }
+  .cta-actions {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .cta-actions a {
+    padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 500;
+  }
+  .cta-actions .primary { background: var(--accent); color: var(--bg); }
+  .cta-actions .secondary { border: 1px solid var(--line); color: var(--ink); }
+
+  /* footer */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 40px 48px;
+    text-align: center;
+    font-size: 13px; color: var(--muted);
+  }
+  footer a { color: var(--accent); }
+  footer a:hover { color: var(--ink); }
+
+  /* fade */
+  .fade { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade.visible { opacity: 1; transform: translateY(0); }
+
+  /* mobile */
+  @media (max-width: 700px) {
+    .nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .hero h1 { font-size: 38px; letter-spacing: -1.5px; }
+    .hero p { font-size: 16px; }
+    .section { padding: 60px 24px; }
+    .section h2 { font-size: 28px; letter-spacing: -1px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feat { border-right: none; }
+    .code-section, .cta { padding: 60px 24px; }
+    .cta h2 { font-size: 28px; }
+    .code-block, .terminal-body { font-size: 12px; }
+    .terminal-body { padding: 16px; }
+    .code-block { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="dot"></div>
+    smith
+  </div>
+  <div class="nav-links">
+    <a href="#how">how it works</a>
+    <a href="#features">features</a>
+    <a href="#install">install</a>
+    <a href="https://github.com/valtors/smith">github</a>
+    <a href="https://github.com/valtors/smith" class="nav-cta">get started</a>
+  </div>
+</nav>
+
+<section class="hero fade">
+  <div class="hero-label">npm for MCP</div>
+  <h1>install MCP servers <em>like packages</em>.</h1>
+  <p>npm made javascript installable. cargo made rust installable. smith makes MCP servers installable. one command. any agent. no more editing json configs by hand.</p>
+  <div class="hero-actions">
+    <a href="https://github.com/valtors/smith" class="primary">github</a>
+    <a href="#install" class="secondary">install</a>
+  </div>
+  <div class="hero-meta">MIT · RUST · ONE BINARY</div>
+</section>
+
+<section class="section fade" id="how">
+  <div class="section-label">the problem</div>
+  <h2>every MCP user hits the <em>same wall</em>.</h2>
+  <p>"how do i install an MCP server?" there is no good answer. you copy-paste from a markdown list into your agent config. hope the path is right. hope the version works. hope it doesn't break on update. smith fixes that.</p>
+</section>
+
+<section class="section fade" style="padding-top: 0;">
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="tb r"></div><div class="tb y"></div><div class="tb g"></div>
+    </div>
+    <div class="terminal-body"><span class="comment"># install any MCP server</span>
+<span class="prompt">$</span> smith install @modelcontextprotocol/filesystem
+<span class="flag">installed</span>: filesystem
+  npx -y @modelcontextprotocol/filesystem
+
+<span class="comment"># install from github</span>
+<span class="prompt">$</span> smith install valtors/cairn
+<span class="flag">installed</span>: cairn
+  npx -y github:valtors/cairn
+
+<span class="comment"># see what's running</span>
+<span class="prompt">$</span> smith list
+[active] filesystem (default)
+[active] cairn (default)
+
+<span class="comment"># security audit before activating</span>
+<span class="prompt">$</span> smith secure filesystem
+filesystem: <span class="flag">Safe</span>
+  no issues found
+
+<span class="comment"># start everything, one endpoint</span>
+<span class="prompt">$</span> smith compose
+<span class="flag">smith compose</span>: routing 2 servers on stdio</div>
+  </div>
+</section>
+
+<div class="features-grid">
+  <div class="feat">
+    <div class="feat-num">01 — install</div>
+    <h3>one command</h3>
+    <p>npm packages, github repos, local paths. smith resolves the source, writes the config, wires it into your agent. no more manual json editing.</p>
+  </div>
+  <div class="feat">
+    <div class="feat-num">02 — compose</div>
+    <h3>unified endpoint</h3>
+    <p>smith compose starts all your servers and exposes one MCP endpoint. the agent sees one set of tools, not 15 separate configs. route calls automatically.</p>
+  </div>
+  <div class="feat">
+    <div class="feat-num">03 — secure</div>
+    <h3>audit before activate</h3>
+    <p>smith secure probes servers for dangerous patterns, excessive permissions, data exfiltration risks. safe, caution, or dangerous. don't guess.</p>
+  </div>
+  <div class="feat">
+    <div class="feat-num">04 — profiles</div>
+    <h3>switch contexts</h3>
+    <p>smith profile work. smith profile personal. one command switches your active server set. different tools for different projects, no config juggling.</p>
+  </div>
+  <div class="feat">
+    <div class="feat-num">05 — registry</div>
+    <h3>github-based index</h3>
+    <p>anyone can publish. smith publish from any git repo. no walled garden, no central authority. search the registry, find what you need.</p>
+  </div>
+  <div class="feat">
+    <div class="feat-num">06 — config</div>
+    <h3>one file</h3>
+    <p>~/.smith/config.json. any MCP-compatible agent can read it. no lock-in to smith either. it's just json. the format is documented. the binary is optional.</p>
+  </div>
+</div>
+
+<section class="code-section fade" id="install">
+  <div class="code-inner">
+    <div class="code-label">install</div>
+    <div class="code-block"><span class="comment"># clone and build</span>
+<span class="prompt">$</span> git clone https://github.com/valtors/smith
+<span class="prompt">$</span> cd smith && cargo build --release
+
+<span class="comment"># install servers</span>
+<span class="prompt">$</span> smith install @modelcontextprotocol/filesystem
+<span class="prompt">$</span> smith install valtors/cairn --profile work
+
+<span class="comment"># switch profiles</span>
+<span class="prompt">$</span> smith profile switch work
+<span class="flag">switched to profile</span>: work
+
+<span class="comment"># update everything</span>
+<span class="prompt">$</span> smith update
+<span class="flag">updated</span>: filesystem
+<span class="flag">updated</span>: cairn
+
+<span class="comment"># search the registry</span>
+<span class="prompt">$</span> smith search "filesystem"
+<span class="key">filesystem</span> - file system access (verified)
+
+<span class="comment"># remove</span>
+<span class="prompt">$</span> smith remove filesystem
+<span class="flag">removed</span>: filesystem</div>
+  </div>
+</section>
+
+<section class="cta fade">
+  <h2>it's open source. <em>no walled garden.</em></h2>
+  <p>MIT licensed. one binary. github-based registry anyone can publish to. no saas, no enterprise tier, no proprietary fork.</p>
+  <div class="cta-actions">
+    <a href="https://github.com/valtors/smith" class="primary">github</a>
+    <a href="https://github.com/valtors/smith#readme" class="secondary">read the docs</a>
+  </div>
+</section>
+
+<footer>
+  <a href="https://github.com/valtors">valtors</a> · npm for MCP · MIT
+</footer>
+
+<script>
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade').forEach(function(el) { observer.observe(el); });
+</script>
+
+</body>
+</html>
