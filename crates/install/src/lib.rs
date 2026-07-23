@@ -1,3 +1,9 @@
+//! fetch from npm, git, or local path. verify. activate.
+//!
+//! smith doesn't run a registry. it resolves sources: npm packages,
+//! git repos, local paths. each gets turned into a command + args that
+//! the compose layer can spawn. the install is just config writing.
+
 use smith_config::{parse_source, ServerEntry, SmithConfig, SourceType};
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -11,7 +17,7 @@ pub struct InstallResult {
 
 pub fn install(config: &mut SmithConfig, source: &str, profile: Option<&str>) -> Result<InstallResult, String> {
     let source_type = parse_source(source);
-    let (name, command, args) = resolve_server(&source_type, source)?;
+    let (name, command, args) = resolve_server(&source_type)?;
 
     let entry = ServerEntry {
         name: name.clone(),
@@ -30,11 +36,11 @@ pub fn install(config: &mut SmithConfig, source: &str, profile: Option<&str>) ->
         name,
         command,
         args,
-        message: format!("installed"),
+        message: "installed".to_string(),
     })
 }
 
-fn resolve_server(source_type: &SourceType, raw: &str) -> Result<(String, String, Vec<String>), String> {
+fn resolve_server(source_type: &SourceType) -> Result<(String, String, Vec<String>), String> {
     match source_type {
         SourceType::Npm(pkg) => {
             let name = pkg.split('/').last().unwrap_or(pkg).to_string();

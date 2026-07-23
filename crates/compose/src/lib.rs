@@ -1,3 +1,9 @@
+//! compose. spawn all installed servers. expose one unified endpoint.
+//!
+//! the agent sees one set of tools, not 15 separate configs. smith probes
+//! each server for its tool list, merges them with a `[servername]` prefix,
+//! and routes tool calls to the right process. one pipe in, many pipes out.
+
 use smith_config::{ServerEntry, SmithConfig};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -96,7 +102,7 @@ fn probe_server(entry: &ServerEntry) -> Result<Value, String> {
 
     let output = child.wait_with_output().map_err(|e| e.to_string())?;
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     for line in stdout.lines() {
         if let Ok(val) = serde_json::from_str::<Value>(line) {
             if val.get("id").and_then(|v| v.as_i64()) == Some(2) {
@@ -153,7 +159,7 @@ pub fn route_tool_call(config: &SmithConfig, tool_name: &str, args: &Value) -> R
 
     let output = child.wait_with_output().map_err(|e| e.to_string())?;
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     for line in stdout.lines() {
         if let Ok(val) = serde_json::from_str::<Value>(line) {
             if val.get("id").and_then(|v| v.as_i64()) == Some(2) {

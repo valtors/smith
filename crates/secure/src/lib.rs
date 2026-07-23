@@ -1,6 +1,15 @@
+//! security probe. audit a server before you activate it.
+//!
+//! checks for dangerous tool patterns, excessive permissions, data
+//! exfiltration risks. powered by mcprobe concepts. the idea is simple:
+//! before you let a random MCP server into your agent, check what it can
+//! do. smith runs this check and reports.
+//!
+//! this is static analysis. it looks at env vars, command patterns, and
+//! tool names. it doesn't execute anything. safety first.
+
 use smith_config::SmithConfig;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SecurityReport {

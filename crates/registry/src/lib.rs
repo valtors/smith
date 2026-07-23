@@ -1,3 +1,10 @@
+//! github-based registry. anyone can publish. no walled garden.
+//!
+//! the index lives at github.com/valtors/smith-registry as a json file.
+//! smith fetches it, searches by name/description/category, and prints
+//! results. no API key, no auth, no rate limits. just a json file on
+//! a public repo.
+
 use serde::{Deserialize, Serialize};
 
 const REGISTRY_URL: &str = "https://raw.githubusercontent.com/valtors/smith-registry/main/registry.json";

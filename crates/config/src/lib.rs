@@ -1,5 +1,10 @@
+//! smith config. reads and writes ~/.smith/config.json.
+//!
+//! any MCP-compatible agent can read this config. smith is the source of
+//! truth for what's installed, what's active, and what profile you're in.
+//! one json file. no database, no registry service, no lock-in.
+
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::path::PathBuf;
 

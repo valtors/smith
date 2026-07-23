@@ -1,3 +1,9 @@
+//! profiles. named server sets for different contexts.
+//!
+//! `smith profile work` switches your active server set. `smith profile
+//! personal` switches back. one command. your work tools don't leak into
+//! your personal agent and vice versa.
+
 use smith_config::SmithConfig;
 
 pub fn switch(config: &mut SmithConfig, profile: &str) -> Result<String, String> {

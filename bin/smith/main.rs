@@ -1,3 +1,19 @@
+//! smith - npm for MCP. install, compose, secure, and manage MCP servers.
+//!
+//! npm made javascript installable. cargo made rust installable.
+//! smith makes MCP servers installable.
+//!
+//! usage:
+//!   smith install @modelcontextprotocol/filesystem
+//!   smith install valtors/cairn
+//!   smith list
+//!   smith compose
+//!   smith secure filesystem
+//!   smith profile work
+//!   smith update
+//!   smith remove filesystem
+//!   smith search memory
+
 use clap::{Parser, Subcommand};
 
 use smith_compose::run_compose_server;
