@@ -20,8 +20,8 @@ use smith_compose::run_compose_server;
 use smith_config::{load, save};
 use smith_install::{install as do_install, uninstall, update};
 use smith_profile as profile_mod;
-use smith_registry;
-use smith_secure;
+use smith_registry::{fetch_registry, format_entry, search as registry_search};
+use smith_secure::{audit as secure_audit, audit_all as secure_audit_all};
 
 #[derive(Parser)]
 #[command(
@@ -148,7 +148,7 @@ fn main() {
         Commands::Secure { name } => {
             let config = load();
             match name {
-                Some(n) => match smith_secure::audit(&config, &n) {
+                Some(n) => match secure_audit(&config, &n) {
                     Ok(report) => {
                         println!("{}: {:?}", report.server, report.risk_level);
                         if report.findings.is_empty() {
@@ -161,7 +161,7 @@ fn main() {
                     Err(e) => eprintln!("error: {}", e),
                 },
                 None => {
-                    let reports = smith_secure::audit_all(&config);
+                    let reports = secure_audit_all(&config);
                     if reports.is_empty() {
                         println!("no servers to audit");
                     }
@@ -205,14 +205,14 @@ fn main() {
                 }
             }
         }
-        Commands::Search { query } => match smith_registry::fetch_registry() {
+        Commands::Search { query } => match fetch_registry() {
             Ok(entries) => {
-                let results = smith_registry::search(&entries, &query);
+                let results = registry_search(&entries, &query);
                 if results.is_empty() {
                     println!("no servers found for: {}", query);
                 }
                 for entry in results {
-                    println!("{}", smith_registry::format_entry(entry));
+                    println!("{}", format_entry(entry));
                 }
             }
             Err(e) => eprintln!("{}", e),
