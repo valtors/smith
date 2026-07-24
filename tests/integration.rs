@@ -1,19 +1,7 @@
-use smith_config::{config_path, load, parse_source, save, ServerEntry, SmithConfig, SourceType};
+use smith_config::{parse_source, SmithConfig, SourceType};
 use smith_install::{install, uninstall, update};
-use smith_profile;
-use smith_secure;
-use std::collections::HashMap;
-
-fn tmp_config_path() -> String {
-    format!(
-        "/tmp/smith-test-{}-{}.json",
-        std::process::id(),
-        std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_nanos()
-    )
-}
+use smith_profile::{assign, current, list, switch};
+use smith_secure::audit;
 
 fn fresh_config() -> SmithConfig {
     SmithConfig::default()
@@ -113,18 +101,18 @@ fn profile_switch() {
     .unwrap();
     install(&mut config, "valtors/cairn", Some("personal")).unwrap();
 
-    let msg = smith_profile::switch(&mut config, "work").unwrap();
+    let msg = switch(&mut config, "work").unwrap();
     assert!(msg.contains("work"));
-    assert_eq!(smith_profile::current(&config), "work");
+    assert_eq!(current(&config), "work");
 
-    smith_profile::switch(&mut config, "personal").unwrap();
-    assert_eq!(smith_profile::current(&config), "personal");
+    switch(&mut config, "personal").unwrap();
+    assert_eq!(current(&config), "personal");
 }
 
 #[test]
 fn profile_list_includes_default() {
     let config = fresh_config();
-    let profiles = smith_profile::list(&config);
+    let profiles = list(&config);
     assert!(profiles.contains(&"default".to_string()));
 }
 
@@ -132,7 +120,7 @@ fn profile_list_includes_default() {
 fn profile_assign() {
     let mut config = fresh_config();
     install(&mut config, "@modelcontextprotocol/filesystem", None).unwrap();
-    smith_profile::assign(&mut config, "filesystem", "custom").unwrap();
+    assign(&mut config, "filesystem", "custom").unwrap();
     let server = config.get_server("filesystem").unwrap();
     assert_eq!(server.profile, "custom");
 }
@@ -141,14 +129,14 @@ fn profile_assign() {
 fn secure_audit_safe_server() {
     let mut config = fresh_config();
     install(&mut config, "@modelcontextprotocol/filesystem", None).unwrap();
-    let report = smith_secure::audit(&config, "filesystem").unwrap();
+    let report = audit(&config, "filesystem").unwrap();
     assert!(report.passed);
 }
 
 #[test]
 fn secure_audit_nonexistent_server() {
     let config = fresh_config();
-    let result = smith_secure::audit(&config, "nope");
+    let result = audit(&config, "nope");
     assert!(result.is_err());
 }
 
@@ -164,7 +152,7 @@ fn secure_audit_flags_sensitive_env() {
     server
         .env
         .insert("API_KEY".to_string(), "secret123".to_string());
-    let report = smith_secure::audit(&config, "filesystem").unwrap();
+    let report = audit(&config, "filesystem").unwrap();
     assert!(report.findings.iter().any(|f| f.category == "env"));
 }
 
