@@ -1,5 +1,8 @@
 # smith
 
+[![CI](https://github.com/valtors/smith/actions/workflows/ci.yml/badge.svg)](https://github.com/valtors/smith/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-0F172A?style=flat-square)](./LICENSE)
+
 npm for MCP. install, compose, secure, and manage MCP servers. one binary.
 
 ## what
