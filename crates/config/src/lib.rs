@@ -129,3 +129,105 @@ pub enum SourceType {
     GitRepo(String),
     Local(PathBuf),
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn default_config_has_no_servers() {
+        let c = SmithConfig::default();
+        assert!(c.servers.is_empty());
+        assert_eq!(c.active_profile, "default");
+    }
+
+    #[test]
+    fn parse_npm_package() {
+        let st = parse_source("@scope/pkg");
+        assert!(matches!(st, SourceType::Npm(_)));
+    }
+
+    #[test]
+    fn parse_plain_npm() {
+        let st = parse_source("mypackage");
+        assert!(matches!(st, SourceType::Npm(_)));
+    }
+
+    #[test]
+    fn parse_github_shorthand() {
+        let st = parse_source("user/repo");
+        assert!(matches!(st, SourceType::GitRepo(_)));
+    }
+
+    #[test]
+    fn parse_https_git() {
+        let st = parse_source("https://github.com/user/repo");
+        assert!(matches!(st, SourceType::Git(_)));
+    }
+
+    #[test]
+    fn parse_local_relative() {
+        let st = parse_source("./local/path");
+        assert!(matches!(st, SourceType::Local(_)));
+    }
+
+    #[test]
+    fn parse_local_absolute() {
+        let st = parse_source("/usr/local/bin/server");
+        assert!(matches!(st, SourceType::Local(_)));
+    }
+
+    #[test]
+    fn set_and_get_profile() {
+        let mut c = SmithConfig::default();
+        c.set_profile("work");
+        assert_eq!(c.active_profile, "work");
+    }
+
+    #[test]
+    fn active_servers_filters_by_profile() {
+        let mut c = SmithConfig::default();
+        let s1 = ServerEntry {
+            name: "a".into(),
+            command: "npx".into(),
+            args: vec![],
+            env: Default::default(),
+            source: "@scope/a".into(),
+            profile: "work".into(),
+            enabled: true,
+            version: "latest".into(),
+        };
+        let s2 = ServerEntry {
+            name: "b".into(),
+            command: "npx".into(),
+            args: vec![],
+            env: Default::default(),
+            source: "@scope/b".into(),
+            profile: "personal".into(),
+            enabled: true,
+            version: "latest".into(),
+        };
+        c.servers.push(s1);
+        c.servers.push(s2);
+        c.set_profile("work");
+        assert_eq!(c.active_servers().len(), 1);
+        assert_eq!(c.active_servers()[0].name, "a");
+    }
+
+    #[test]
+    fn active_servers_default_includes_unprofiled() {
+        let mut c = SmithConfig::default();
+        let s = ServerEntry {
+            name: "a".into(),
+            command: "npx".into(),
+            args: vec![],
+            env: Default::default(),
+            source: "@scope/a".into(),
+            profile: "default".into(),
+            enabled: true,
+            version: "latest".into(),
+        };
+        c.servers.push(s);
+        assert_eq!(c.active_servers().len(), 1);
+    }
+}

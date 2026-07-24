@@ -8,8 +8,8 @@
 //! this is static analysis. it looks at env vars, command patterns, and
 //! tool names. it doesn't execute anything. safety first.
 
-use smith_config::SmithConfig;
 use serde::{Deserialize, Serialize};
+use smith_config::SmithConfig;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SecurityReport {
@@ -35,15 +35,21 @@ pub struct Finding {
 }
 
 pub fn audit(config: &SmithConfig, server_name: &str) -> Result<SecurityReport, String> {
-    let entry = config.get_server(server_name)
+    let entry = config
+        .get_server(server_name)
         .ok_or(format!("server not found: {}", server_name))?;
 
     let mut findings = Vec::new();
 
-    let env_concerns: Vec<&str> = entry.env.keys()
+    let env_concerns: Vec<&str> = entry
+        .env
+        .keys()
         .filter(|k| {
             let lower = k.to_lowercase();
-            lower.contains("key") || lower.contains("secret") || lower.contains("token") || lower.contains("password")
+            lower.contains("key")
+                || lower.contains("secret")
+                || lower.contains("token")
+                || lower.contains("password")
         })
         .map(|k| k.as_str())
         .collect();
@@ -58,7 +64,12 @@ pub fn audit(config: &SmithConfig, server_name: &str) -> Result<SecurityReport, 
     }
 
     if entry.command == "npx" || entry.command == "npm" {
-        let pkg = entry.args.iter().find(|a| !a.starts_with('-')).cloned().unwrap_or_default();
+        let pkg = entry
+            .args
+            .iter()
+            .find(|a| !a.starts_with('-'))
+            .cloned()
+            .unwrap_or_default();
         if pkg.is_empty() {
             findings.push(Finding {
                 severity: "warn".to_string(),
@@ -88,8 +99,67 @@ pub fn audit(config: &SmithConfig, server_name: &str) -> Result<SecurityReport, 
 }
 
 pub fn audit_all(config: &SmithConfig) -> Vec<SecurityReport> {
-    config.servers.iter()
+    config
+        .servers
+        .iter()
         .filter(|s| s.enabled)
         .filter_map(|s| audit(config, &s.name).ok())
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use smith_config::{ServerEntry, SmithConfig};
+
+    fn make_server(name: &str, env: Vec<(&str, &str)>) -> ServerEntry {
+        let mut e = std::collections::HashMap::new();
+        for (k, v) in env {
+            e.insert(k.to_string(), v.to_string());
+        }
+        ServerEntry {
+            name: name.into(),
+            command: "npx".into(),
+            args: vec![],
+            env: e,
+            source: format!("@scope/{}", name),
+            profile: "default".into(),
+            version: "latest".into(),
+            enabled: true,
+        }
+    }
+
+    #[test]
+    fn audit_safe_server_passes() {
+        let mut config = SmithConfig::default();
+        config.servers.push(make_server("safe", vec![]));
+        let report = audit(&config, "safe").unwrap();
+        assert!(report.passed);
+    }
+
+    #[test]
+    fn audit_missing_server_errors() {
+        let config = SmithConfig::default();
+        assert!(audit(&config, "nope").is_err());
+    }
+
+    #[test]
+    fn audit_flags_api_key() {
+        let mut config = SmithConfig::default();
+        config
+            .servers
+            .push(make_server("risky", vec![("API_KEY", "secret")]));
+        let report = audit(&config, "risky").unwrap();
+        assert!(report.findings.iter().any(|f| f.category == "env"));
+    }
+
+    #[test]
+    fn audit_flags_token() {
+        let mut config = SmithConfig::default();
+        config
+            .servers
+            .push(make_server("risky", vec![("TOKEN", "abc123")]));
+        let report = audit(&config, "risky").unwrap();
+        assert!(report.findings.iter().any(|f| f.category == "env"));
+    }
 }

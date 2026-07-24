@@ -1,11 +1,18 @@
-use smith_config::{SmithConfig, ServerEntry, parse_source, SourceType, save, load, config_path};
+use smith_config::{config_path, load, parse_source, save, ServerEntry, SmithConfig, SourceType};
 use smith_install::{install, uninstall, update};
 use smith_profile;
 use smith_secure;
 use std::collections::HashMap;
 
 fn tmp_config_path() -> String {
-    format!("/home/container/smith-test-{}.json", std::process::id())
+    format!(
+        "/tmp/smith-test-{}-{}.json",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    )
 }
 
 fn fresh_config() -> SmithConfig {
@@ -78,7 +85,12 @@ fn uninstall_nonexistent_returns_false() {
 #[test]
 fn active_servers_filter_by_profile() {
     let mut config = fresh_config();
-    install(&mut config, "@modelcontextprotocol/filesystem", Some("work")).unwrap();
+    install(
+        &mut config,
+        "@modelcontextprotocol/filesystem",
+        Some("work"),
+    )
+    .unwrap();
     install(&mut config, "valtors/cairn", Some("personal")).unwrap();
 
     config.set_profile("work");
@@ -93,7 +105,12 @@ fn active_servers_filter_by_profile() {
 #[test]
 fn profile_switch() {
     let mut config = fresh_config();
-    install(&mut config, "@modelcontextprotocol/filesystem", Some("work")).unwrap();
+    install(
+        &mut config,
+        "@modelcontextprotocol/filesystem",
+        Some("work"),
+    )
+    .unwrap();
     install(&mut config, "valtors/cairn", Some("personal")).unwrap();
 
     let msg = smith_profile::switch(&mut config, "work").unwrap();
@@ -139,8 +156,14 @@ fn secure_audit_nonexistent_server() {
 fn secure_audit_flags_sensitive_env() {
     let mut config = fresh_config();
     install(&mut config, "@modelcontextprotocol/filesystem", None).unwrap();
-    let server = config.servers.iter_mut().find(|s| s.name == "filesystem").unwrap();
-    server.env.insert("API_KEY".to_string(), "secret123".to_string());
+    let server = config
+        .servers
+        .iter_mut()
+        .find(|s| s.name == "filesystem")
+        .unwrap();
+    server
+        .env
+        .insert("API_KEY".to_string(), "secret123".to_string());
     let report = smith_secure::audit(&config, "filesystem").unwrap();
     assert!(report.findings.iter().any(|f| f.category == "env"));
 }

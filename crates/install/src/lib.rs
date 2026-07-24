@@ -6,7 +6,6 @@
 
 use smith_config::{parse_source, ServerEntry, SmithConfig, SourceType};
 use std::collections::HashMap;
-use std::path::PathBuf;
 
 pub struct InstallResult {
     pub name: String,
@@ -15,7 +14,11 @@ pub struct InstallResult {
     pub message: String,
 }
 
-pub fn install(config: &mut SmithConfig, source: &str, profile: Option<&str>) -> Result<InstallResult, String> {
+pub fn install(
+    config: &mut SmithConfig,
+    source: &str,
+    profile: Option<&str>,
+) -> Result<InstallResult, String> {
     let source_type = parse_source(source);
     let (name, command, args) = resolve_server(&source_type)?;
 
@@ -43,13 +46,13 @@ pub fn install(config: &mut SmithConfig, source: &str, profile: Option<&str>) ->
 fn resolve_server(source_type: &SourceType) -> Result<(String, String, Vec<String>), String> {
     match source_type {
         SourceType::Npm(pkg) => {
-            let name = pkg.split('/').last().unwrap_or(pkg).to_string();
+            let name = pkg.split('/').next_back().unwrap_or(pkg).to_string();
             let command = "npx".to_string();
             let args = vec!["-y".to_string(), pkg.clone()];
             Ok((name, command, args))
         }
         SourceType::GitRepo(repo) => {
-            let name = repo.split('/').last().unwrap_or(repo).to_string();
+            let name = repo.split('/').next_back().unwrap_or(repo).to_string();
             let command = "npx".to_string();
             let args = vec!["-y".to_string(), format!("github:{}", repo)];
             Ok((name, command, args))
@@ -92,4 +95,48 @@ pub fn update(config: &mut SmithConfig, name: Option<&str>) -> Result<Vec<String
         updated.push(server.name.clone());
     }
     Ok(updated)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use smith_config::SmithConfig;
+
+    #[test]
+    fn install_npm_creates_npx_command() {
+        let mut config = SmithConfig::default();
+        let result = install(&mut config, "@scope/mypackage", None).unwrap();
+        assert_eq!(result.command, "npx");
+        assert!(result.args.len() > 0);
+        assert_eq!(config.servers.len(), 1);
+    }
+
+    #[test]
+    fn install_github_creates_git_clone() {
+        let mut config = SmithConfig::default();
+        let result = install(&mut config, "user/repo", None).unwrap();
+        assert_eq!(result.name, "repo");
+    }
+
+    #[test]
+    fn install_replaces_existing() {
+        let mut config = SmithConfig::default();
+        install(&mut config, "@scope/pkg", None).unwrap();
+        install(&mut config, "@scope/pkg", None).unwrap();
+        assert_eq!(config.servers.len(), 1);
+    }
+
+    #[test]
+    fn uninstall_removes() {
+        let mut config = SmithConfig::default();
+        install(&mut config, "@scope/pkg", None).unwrap();
+        assert!(uninstall(&mut config, "pkg").unwrap());
+        assert_eq!(config.servers.len(), 0);
+    }
+
+    #[test]
+    fn uninstall_missing_returns_false() {
+        let mut config = SmithConfig::default();
+        assert!(!uninstall(&mut config, "nope").unwrap());
+    }
 }

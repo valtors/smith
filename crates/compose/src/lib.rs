@@ -4,11 +4,11 @@
 //! each server for its tool list, merges them with a `[servername]` prefix,
 //! and routes tool calls to the right process. one pipe in, many pipes out.
 
-use smith_config::{ServerEntry, SmithConfig};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use smith_config::{ServerEntry, SmithConfig};
 use std::io::{self, BufRead, Write};
-use std::process::{Command, Stdio, Child};
+use std::process::{Child, Command, Stdio};
 
 pub struct ComposedServer {
     pub name: String,
@@ -51,12 +51,24 @@ pub fn list_all_tools(config: &SmithConfig) -> Vec<ComposedTool> {
 
     for entry in active {
         if let Ok(response) = probe_server(entry) {
-            if let Some(tool_list) = response.get("result").and_then(|r| r.get("tools")).and_then(|t| t.as_array()) {
+            if let Some(tool_list) = response
+                .get("result")
+                .and_then(|r| r.get("tools"))
+                .and_then(|t| t.as_array())
+            {
                 for tool in tool_list {
                     tools.push(ComposedTool {
                         server: entry.name.clone(),
-                        name: tool.get("name").and_then(|v| v.as_str()).unwrap_or("").to_string(),
-                        description: tool.get("description").and_then(|v| v.as_str()).unwrap_or("").to_string(),
+                        name: tool
+                            .get("name")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("")
+                            .to_string(),
+                        description: tool
+                            .get("description")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("")
+                            .to_string(),
                         input_schema: tool.get("inputSchema").cloned().unwrap_or(json!({})),
                     });
                 }
@@ -114,12 +126,19 @@ fn probe_server(entry: &ServerEntry) -> Result<Value, String> {
     Err("no tools/list response".to_string())
 }
 
-pub fn route_tool_call(config: &SmithConfig, tool_name: &str, args: &Value) -> Result<Value, String> {
+pub fn route_tool_call(
+    config: &SmithConfig,
+    tool_name: &str,
+    args: &Value,
+) -> Result<Value, String> {
     let tools = list_all_tools(config);
-    let tool = tools.iter().find(|t| t.name == tool_name)
+    let tool = tools
+        .iter()
+        .find(|t| t.name == tool_name)
         .ok_or(format!("tool not found: {}", tool_name))?;
 
-    let entry = config.get_server(&tool.server)
+    let entry = config
+        .get_server(&tool.server)
         .ok_or(format!("server not found: {}", tool.server))?;
 
     let mut child = Command::new(&entry.command)
@@ -221,13 +240,15 @@ pub fn run_compose_server(config: &SmithConfig) {
                         })).collect::<Vec<_>>()
                     }
                 })
-            },
+            }
             "tools/call" => {
-                let tool_name = request.get("params")
+                let tool_name = request
+                    .get("params")
                     .and_then(|p| p.get("name"))
                     .and_then(|n| n.as_str())
                     .unwrap_or("");
-                let args = request.get("params")
+                let args = request
+                    .get("params")
                     .and_then(|p| p.get("arguments"))
                     .cloned()
                     .unwrap_or(json!({}));
@@ -244,7 +265,7 @@ pub fn run_compose_server(config: &SmithConfig) {
                         "error": { "code": -32603, "message": e }
                     }),
                 }
-            },
+            }
             _ => json!({
                 "jsonrpc": "2.0",
                 "id": id,

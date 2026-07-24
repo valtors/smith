@@ -24,7 +24,11 @@ use smith_registry;
 use smith_secure;
 
 #[derive(Parser)]
-#[command(name = "smith", version, about = "npm for MCP. install, compose, secure, and manage MCP servers.")]
+#[command(
+    name = "smith",
+    version,
+    about = "npm for MCP. install, compose, secure, and manage MCP servers."
+)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -92,7 +96,9 @@ fn main() {
         Commands::List => {
             let config = load();
             if config.servers.is_empty() {
-                println!("no servers installed. try: smith install @modelcontextprotocol/filesystem");
+                println!(
+                    "no servers installed. try: smith install @modelcontextprotocol/filesystem"
+                );
                 return;
             }
             let active = config.active_servers();
@@ -103,7 +109,12 @@ fn main() {
                     "[inactive]"
                 };
                 println!("{} {} ({})", marker, server.name, server.profile);
-                println!("  {} {} v{}", server.command, server.args.join(" "), server.version);
+                println!(
+                    "  {} {} v{}",
+                    server.command,
+                    server.args.join(" "),
+                    server.version
+                );
             }
         }
         Commands::Update { name } => {
@@ -128,26 +139,27 @@ fn main() {
                 eprintln!("no active servers. install one: smith install @modelcontextprotocol/filesystem");
                 return;
             }
-            println!("smith compose: routing {} servers on stdio", config.active_servers().len());
+            println!(
+                "smith compose: routing {} servers on stdio",
+                config.active_servers().len()
+            );
             run_compose_server(&config);
         }
         Commands::Secure { name } => {
             let config = load();
             match name {
-                Some(n) => {
-                    match smith_secure::audit(&config, &n) {
-                        Ok(report) => {
-                            println!("{}: {:?}", report.server, report.risk_level);
-                            if report.findings.is_empty() {
-                                println!("  no issues found");
-                            }
-                            for f in &report.findings {
-                                println!("  [{}] {}: {}", f.severity, f.category, f.message);
-                            }
+                Some(n) => match smith_secure::audit(&config, &n) {
+                    Ok(report) => {
+                        println!("{}: {:?}", report.server, report.risk_level);
+                        if report.findings.is_empty() {
+                            println!("  no issues found");
                         }
-                        Err(e) => eprintln!("error: {}", e),
+                        for f in &report.findings {
+                            println!("  [{}] {}: {}", f.severity, f.category, f.message);
+                        }
                     }
-                }
+                    Err(e) => eprintln!("error: {}", e),
+                },
                 None => {
                     let reports = smith_secure::audit_all(&config);
                     if reports.is_empty() {
@@ -175,15 +187,13 @@ fn main() {
                 ProfileAction::Current => {
                     println!("{}", profile_mod::current(&config));
                 }
-                ProfileAction::Switch { name } => {
-                    match profile_mod::switch(&mut config, &name) {
-                        Ok(msg) => {
-                            save(&config).ok();
-                            println!("{}", msg);
-                        }
-                        Err(e) => eprintln!("error: {}", e),
+                ProfileAction::Switch { name } => match profile_mod::switch(&mut config, &name) {
+                    Ok(msg) => {
+                        save(&config).ok();
+                        println!("{}", msg);
                     }
-                }
+                    Err(e) => eprintln!("error: {}", e),
+                },
                 ProfileAction::Assign { server, profile } => {
                     match profile_mod::assign(&mut config, &server, &profile) {
                         Ok(()) => {
@@ -195,19 +205,17 @@ fn main() {
                 }
             }
         }
-        Commands::Search { query } => {
-            match smith_registry::fetch_registry() {
-                Ok(entries) => {
-                    let results = smith_registry::search(&entries, &query);
-                    if results.is_empty() {
-                        println!("no servers found for: {}", query);
-                    }
-                    for entry in results {
-                        println!("{}", smith_registry::format_entry(entry));
-                    }
+        Commands::Search { query } => match smith_registry::fetch_registry() {
+            Ok(entries) => {
+                let results = smith_registry::search(&entries, &query);
+                if results.is_empty() {
+                    println!("no servers found for: {}", query);
                 }
-                Err(e) => eprintln!("{}", e),
+                for entry in results {
+                    println!("{}", smith_registry::format_entry(entry));
+                }
             }
-        }
+            Err(e) => eprintln!("{}", e),
+        },
     }
 }
