@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/valtors/smith/actions/workflows/ci.yml/badge.svg)](https://github.com/valtors/smith/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-0F172A?style=flat-square)](./LICENSE)
+[![Rust](https://img.shields.io/badge/rust-1.75+-CE422B?style=flat-square)](https://www.rust-lang.org/)
+[![tests](https://img.shields.io/badge/tests-74-green?style=flat-square)]()
 
 npm for MCP. install, compose, secure, and manage MCP servers. one binary.
 
@@ -25,6 +27,17 @@ smith compose
 every single person using MCP hits the same wall: "how do i install an MCP server?" there is no good answer. you copy-paste from a markdown list into your agent config. hope the path is right. hope the version works. hope it doesn't break when something updates.
 
 npm made javascript installable. cargo made rust installable. smith makes MCP servers installable.
+
+| | manual config | mcp-cli | smith |
+|---|---|---|---|
+| install from npm | no | yes | yes |
+| install from git | no | no | yes |
+| install from local | no | no | yes |
+| security audit | no | no | yes |
+| compose multiple servers | no | no | yes |
+| profiles | no | no | yes |
+| update all | manual | no | one command |
+| config format | json by hand | json | json, managed |
 
 ## how it works
 
@@ -54,13 +67,32 @@ smith/
 
 one binary. reads/writes json config. spawns and manages server processes.
 
+## install
+
+```bash
+cargo install smith
+```
+
+or build from source:
+
+```bash
+git clone https://github.com/valtors/smith
+cd smith
+cargo build --release
+cp target/release/smith /usr/local/bin/
+```
+
 ## usage
 
 ```bash
-# install
+# install from npm
 smith install @modelcontextprotocol/filesystem
+
+# install from git
 smith install valtors/cairn
-smith install github.com/someuser/some-server
+
+# install from local path
+smith install /path/to/my/server
 
 # see what's installed
 smith list
@@ -83,6 +115,14 @@ smith remove filesystem
 
 # publish your own server to the registry
 smith publish
+```
+
+## tests
+
+74 tests across 6 crates. all pass.
+
+```bash
+cargo test --workspace
 ```
 
 ## license
