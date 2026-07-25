@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-smith-config = { path = "../config" }
+smith-config = { path = "../config", version = "0.1.0" }

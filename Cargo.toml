@@ -11,12 +11,12 @@ path = "bin/smith/main.rs"
 
 [dependencies]
 clap = { version = "4", features = ["derive", "env"] }
-smith-config = { path = "crates/config" }
-smith-compose = { path = "crates/compose" }
-smith-install = { path = "crates/install" }
-smith-secure = { path = "crates/secure" }
-smith-profile = { path = "crates/profile" }
-smith-registry = { path = "crates/registry" }
+smith-config = { path = "crates/config", version = "0.1.0" }
+smith-compose = { path = "crates/compose", version = "0.1.0" }
+smith-install = { path = "crates/install", version = "0.1.0" }
+smith-secure = { path = "crates/secure", version = "0.1.0" }
+smith-profile = { path = "crates/profile", version = "0.1.0" }
+smith-registry = { path = "crates/registry", version = "0.1.0" }
 
 [workspace]
 members = [
