@@ -4,7 +4,7 @@
 //! personal` switches back. one command. your work tools don't leak into
 //! your personal agent and vice versa.
 
-use smith_config::SmithConfig;
+use smith_mcp_config::SmithConfig;
 
 pub fn switch(config: &mut SmithConfig, profile: &str) -> Result<String, String> {
     config.set_profile(profile);
@@ -32,7 +32,7 @@ pub fn assign(config: &mut SmithConfig, server_name: &str, profile: &str) -> Res
 #[cfg(test)]
 mod tests {
     use super::*;
-    use smith_config::{ServerEntry, SmithConfig};
+    use smith_mcp_config::{ServerEntry, SmithConfig};
 
     fn test_config() -> SmithConfig {
         let mut cfg = SmithConfig::default();

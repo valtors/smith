@@ -16,12 +16,12 @@
 
 use clap::{Parser, Subcommand};
 
-use smith_compose::run_compose_server;
-use smith_config::{load, save};
-use smith_install::{install as do_install, uninstall, update};
-use smith_profile as profile_mod;
-use smith_registry::{fetch_registry, format_entry, search as registry_search};
-use smith_secure::{audit as secure_audit, audit_all as secure_audit_all};
+use smith_mcp_compose::run_compose_server;
+use smith_mcp_config::{load, save};
+use smith_mcp_install::{install as do_install, uninstall, update};
+use smith_mcp_profile as profile_mod;
+use smith_mcp_registry::{fetch_registry, format_entry, search as registry_search};
+use smith_mcp_secure::{audit as secure_audit, audit_all as secure_audit_all};
 
 #[derive(Parser)]
 #[command(

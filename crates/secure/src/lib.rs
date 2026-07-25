@@ -9,7 +9,7 @@
 //! tool names. it doesn't execute anything. safety first.
 
 use serde::{Deserialize, Serialize};
-use smith_config::SmithConfig;
+use smith_mcp_config::SmithConfig;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SecurityReport {
@@ -110,7 +110,7 @@ pub fn audit_all(config: &SmithConfig) -> Vec<SecurityReport> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use smith_config::{ServerEntry, SmithConfig};
+    use smith_mcp_config::{ServerEntry, SmithConfig};
 
     fn make_server(name: &str, env: Vec<(&str, &str)>) -> ServerEntry {
         let mut e = std::collections::HashMap::new();

@@ -6,7 +6,7 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
-use smith_config::{ServerEntry, SmithConfig};
+use smith_mcp_config::{ServerEntry, SmithConfig};
 use std::io::{self, BufRead, Write};
 use std::process::{Child, Command, Stdio};
 
@@ -282,7 +282,7 @@ pub fn run_compose_server(config: &SmithConfig) {
 mod tests {
     use super::*;
     use serde_json::json;
-    use smith_config::{ServerEntry, SmithConfig};
+    use smith_mcp_config::{ServerEntry, SmithConfig};
 
     #[test]
     fn test_composed_tool_serialization() {

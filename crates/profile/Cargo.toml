@@ -1,7 +1,10 @@
 [package]
-name = "smith-profile"
+name = "smith-mcp-profile"
+description = "profile management for smith MCP server manager"
+license = "MIT"
+repository = "https://github.com/valtors/smith"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-smith-config = { path = "../config", version = "0.1.0" }
+smith-mcp-config = { path = "../config", version = "0.1.0" }

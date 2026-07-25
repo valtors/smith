@@ -194,47 +194,25 @@ name = "smith"
 version = "0.1.0"
 dependencies = [
  "clap",
- "smith-compose",
- "smith-config",
- "smith-install",
- "smith-profile",
- "smith-registry",
- "smith-secure",
+ "smith-mcp-compose",
+ "smith-mcp-config",
+ "smith-mcp-install",
+ "smith-mcp-profile",
+ "smith-mcp-registry",
+ "smith-mcp-secure",
 ]
 
 [[package]]
-name = "smith-compose"
+name = "smith-mcp-compose"
 version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
- "smith-config",
+ "smith-mcp-config",
 ]
 
 [[package]]
-name = "smith-config"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "smith-install"
-version = "0.1.0"
-dependencies = [
- "smith-config",
-]
-
-[[package]]
-name = "smith-profile"
-version = "0.1.0"
-dependencies = [
- "smith-config",
-]
-
-[[package]]
-name = "smith-registry"
+name = "smith-mcp-config"
 version = "0.1.0"
 dependencies = [
  "serde",
@@ -242,12 +220,34 @@ dependencies = [
 ]
 
 [[package]]
-name = "smith-secure"
+name = "smith-mcp-install"
+version = "0.1.0"
+dependencies = [
+ "smith-mcp-config",
+]
+
+[[package]]
+name = "smith-mcp-profile"
+version = "0.1.0"
+dependencies = [
+ "smith-mcp-config",
+]
+
+[[package]]
+name = "smith-mcp-registry"
 version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
- "smith-config",
+]
+
+[[package]]
+name = "smith-mcp-secure"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "smith-mcp-config",
 ]
 
 [[package]]

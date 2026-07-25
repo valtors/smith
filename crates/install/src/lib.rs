@@ -4,7 +4,7 @@
 //! git repos, local paths. each gets turned into a command + args that
 //! the compose layer can spawn. the install is just config writing.
 
-use smith_config::{parse_source, ServerEntry, SmithConfig, SourceType};
+use smith_mcp_config::{parse_source, ServerEntry, SmithConfig, SourceType};
 use std::collections::HashMap;
 
 pub struct InstallResult {
@@ -100,7 +100,7 @@ pub fn update(config: &mut SmithConfig, name: Option<&str>) -> Result<Vec<String
 #[cfg(test)]
 mod tests {
     use super::*;
-    use smith_config::SmithConfig;
+    use smith_mcp_config::SmithConfig;
 
     #[test]
     fn install_npm_creates_npx_command() {

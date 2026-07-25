@@ -1,7 +1,7 @@
-use smith_config::{parse_source, SmithConfig, SourceType};
-use smith_install::{install, uninstall, update};
-use smith_profile::{assign, current, list, switch};
-use smith_secure::audit;
+use smith_mcp_config::{parse_source, SmithConfig, SourceType};
+use smith_mcp_install::{install, uninstall, update};
+use smith_mcp_profile::{assign, current, list, switch};
+use smith_mcp_secure::audit;
 
 fn fresh_config() -> SmithConfig {
     SmithConfig::default()

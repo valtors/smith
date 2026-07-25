@@ -1,5 +1,8 @@
 [package]
-name = "smith-registry"
+name = "smith-mcp-registry"
+description = "registry index for smith MCP server manager"
+license = "MIT"
+repository = "https://github.com/valtors/smith"
 version = "0.1.0"
 edition = "2021"
 

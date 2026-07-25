@@ -1,9 +1,12 @@
 [package]
-name = "smith-compose"
+name = "smith-mcp-compose"
+description = "server composition for smith MCP server manager"
+license = "MIT"
+repository = "https://github.com/valtors/smith"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-smith-config = { path = "../config", version = "0.1.0" }
+smith-mcp-config = { path = "../config", version = "0.1.0" }
 serde = { workspace = true }
 serde_json = { workspace = true }
