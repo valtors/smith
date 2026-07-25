@@ -277,3 +277,72 @@ pub fn run_compose_server(config: &SmithConfig) {
         let _ = stdout.flush();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+    use smith_config::{ServerEntry, SmithConfig};
+
+    #[test]
+    fn test_composed_tool_serialization() {
+        let tool = ComposedTool {
+            server: "github".to_string(),
+            name: "create_issue".to_string(),
+            description: "Create a GitHub issue".to_string(),
+            input_schema: json!({"type": "object"}),
+        };
+        let serialized = serde_json::to_string(&tool).unwrap();
+        assert!(serialized.contains("github"));
+        assert!(serialized.contains("create_issue"));
+        let deserialized: ComposedTool = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(deserialized.server, "github");
+        assert_eq!(deserialized.name, "create_issue");
+    }
+
+    #[test]
+    fn test_spawn_all_empty_config() {
+        let config = SmithConfig::default();
+        let result = spawn_all(&config);
+        assert!(result.is_ok());
+        assert!(result.unwrap().is_empty());
+    }
+
+    #[test]
+    fn test_spawn_all_disabled_servers() {
+        let mut config = SmithConfig::default();
+        config.servers.push(ServerEntry {
+            name: "test".to_string(),
+            source: "npm".to_string(),
+            version: "1.0.0".to_string(),
+            command: "nonexistent-command-12345".to_string(),
+            args: vec![],
+            env: std::collections::HashMap::new(),
+            enabled: false,
+            profile: "default".to_string(),
+        });
+        let result = spawn_all(&config);
+        assert!(result.is_ok());
+        assert!(result.unwrap().is_empty());
+    }
+
+    #[test]
+    fn test_list_all_tools_empty() {
+        let config = SmithConfig::default();
+        let tools = list_all_tools(&config);
+        assert!(tools.is_empty());
+    }
+
+    #[test]
+    fn test_compose_tool_fields() {
+        let tool = ComposedTool {
+            server: "fs".to_string(),
+            name: "read_file".to_string(),
+            description: "Read a file".to_string(),
+            input_schema: json!({"type": "object", "properties": {}}),
+        };
+        assert_eq!(tool.server, "fs");
+        assert_eq!(tool.name, "read_file");
+        assert_eq!(tool.description, "Read a file");
+    }
+}
