@@ -140,3 +140,78 @@ mod tests {
         assert!(!uninstall(&mut config, "nope").unwrap());
     }
 }
+
+#[cfg(test)]
+mod extra_tests {
+    use super::*;
+
+    #[test]
+    fn install_npm_scoped() {
+        let mut config = SmithConfig::default();
+        let result = install(&mut config, "@scope/my-server", None).unwrap();
+        assert_eq!(result.name, "my-server");
+        assert_eq!(result.command, "npx");
+        assert!(result.args.contains(&"-y".to_string()));
+    }
+
+    #[test]
+    fn install_git_repo() {
+        let mut config = SmithConfig::default();
+        let result = install(&mut config, "github:user/repo", None).unwrap();
+        assert_eq!(result.name, "repo");
+        assert_eq!(result.command, "npx");
+    }
+
+    #[test]
+    fn install_with_profile() {
+        let mut config = SmithConfig::default();
+        let result = install(&mut config, "@scope/server", Some("dev")).unwrap();
+        assert_eq!(result.name, "server");
+    }
+
+    #[test]
+    fn install_result_has_message() {
+        let mut config = SmithConfig::default();
+        let result = install(&mut config, "@scope/server", None).unwrap();
+        assert_eq!(result.message, "installed");
+    }
+
+    #[test]
+    fn install_adds_to_config() {
+        let mut config = SmithConfig::default();
+        assert_eq!(config.servers.len(), 0);
+        install(&mut config, "@scope/server", None).unwrap();
+        assert_eq!(config.servers.len(), 1);
+    }
+
+    #[test]
+    fn install_multiple() {
+        let mut config = SmithConfig::default();
+        install(&mut config, "@scope/server1", None).unwrap();
+        install(&mut config, "@scope/server2", None).unwrap();
+        assert_eq!(config.servers.len(), 2);
+    }
+
+    #[test]
+    fn install_default_profile() {
+        let mut config = SmithConfig::default();
+        install(&mut config, "@scope/server", None).unwrap();
+        assert_eq!(config.servers[0].profile, "default");
+    }
+
+    #[test]
+    fn install_custom_profile() {
+        let mut config = SmithConfig::default();
+        install(&mut config, "@scope/server", Some("staging")).unwrap();
+        assert_eq!(config.servers[0].profile, "staging");
+    }
+
+    #[test]
+    fn resolve_npm_package_name() {
+        let st = SourceType::Npm("@org/pkg".to_string());
+        let (name, cmd, args) = resolve_server(&st).unwrap();
+        assert_eq!(name, "pkg");
+        assert_eq!(cmd, "npx");
+        assert!(args.len() >= 2);
+    }
+}
