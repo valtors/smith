@@ -70,7 +70,7 @@ one binary. reads/writes json config. spawns and manages server processes.
 ## install
 
 ```bash
-cargo install smith
+cargo install smith-mcp
 ```
 
 or build from source:

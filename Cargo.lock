@@ -190,7 +190,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "smith"
+name = "smith-mcp"
 version = "0.1.0"
 dependencies = [
  "clap",
