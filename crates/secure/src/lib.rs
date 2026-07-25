@@ -162,4 +162,102 @@ mod tests {
         let report = audit(&config, "risky").unwrap();
         assert!(report.findings.iter().any(|f| f.category == "env"));
     }
+    fn audit_flags_secret() {
+        let mut config = SmithConfig::default();
+        config
+            .servers
+            .push(make_server("risky", vec![("SECRET", "abc")]));
+        let report = audit(&config, "risky").unwrap();
+        assert!(report.findings.iter().any(|f| f.category == "env"));
+    }
+
+    #[test]
+    fn audit_flags_password() {
+        let mut config = SmithConfig::default();
+        config
+            .servers
+            .push(make_server("risky", vec![("PASSWORD", "abc")]));
+        let report = audit(&config, "risky").unwrap();
+        assert!(report.findings.iter().any(|f| f.category == "env"));
+    }
+
+    #[test]
+    fn audit_npx_no_package_warns() {
+        let mut config = SmithConfig::default();
+        let mut server = make_server("npx-server", vec![]);
+        server.command = "npx".into();
+        server.args = vec![];
+        config.servers.push(server);
+        let report = audit(&config, "npx-server").unwrap();
+        assert!(report.findings.iter().any(|f| f.category == "install"));
+        assert!(matches!(report.risk_level, RiskLevel::Caution));
+    }
+
+    #[test]
+    fn audit_npx_with_package_safe() {
+        let mut config = SmithConfig::default();
+        let mut server = make_server("npx-safe", vec![]);
+        server.command = "npx".into();
+        server.args = vec!["@scope/server".into()];
+        config.servers.push(server);
+        let report = audit(&config, "npx-safe").unwrap();
+        assert!(report.passed);
+    }
+
+    #[test]
+    fn audit_all_returns_reports() {
+        let mut config = SmithConfig::default();
+        config.servers.push(make_server("safe1", vec![]));
+        config.servers.push(make_server("safe2", vec![]));
+        config.servers[1].enabled = false;
+        let reports = audit_all(&config);
+        assert_eq!(reports.len(), 1);
+    }
+
+    #[test]
+    fn audit_all_multiple_enabled() {
+        let mut config = SmithConfig::default();
+        config.servers.push(make_server("s1", vec![]));
+        config.servers.push(make_server("s2", vec![("KEY", "v")]));
+        config.servers.push(make_server("s3", vec![]));
+        let reports = audit_all(&config);
+        assert_eq!(reports.len(), 3);
+    }
+
+    #[test]
+    fn audit_npm_command_no_args() {
+        let mut config = SmithConfig::default();
+        let mut server = make_server("npm-server", vec![]);
+        server.command = "npm".into();
+        server.args = vec![];
+        config.servers.push(server);
+        let report = audit(&config, "npm-server").unwrap();
+        assert!(report.findings.iter().any(|f| f.category == "install"));
+    }
+
+    #[test]
+    fn security_report_serialization() {
+        let report = SecurityReport {
+            server: "test".to_string(),
+            risk_level: RiskLevel::Safe,
+            findings: vec![],
+            passed: true,
+        };
+        let json = serde_json::to_string(&report).unwrap();
+        assert!(json.contains("test"));
+        assert!(json.contains("Safe"));
+    }
+
+    #[test]
+    fn finding_serialization() {
+        let f = Finding {
+            severity: "warn".to_string(),
+            category: "env".to_string(),
+            message: "test message".to_string(),
+            tool: Some("test_tool".to_string()),
+        };
+        let json = serde_json::to_string(&f).unwrap();
+        assert!(json.contains("warn"));
+        assert!(json.contains("test_tool"));
+    }
 }
