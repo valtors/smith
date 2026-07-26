@@ -126,6 +126,12 @@ smith publish
 cargo test --workspace
 ```
 
+## contributing
+
+see [CONTRIBUTING.md](CONTRIBUTING.md). we welcome contributions of all kinds - bug fixes, new patterns, transport support, docs.
+
+good first issues are labeled `good first issue`.
+
 ## license
 
 MIT. strictly open source. no cloud tier, no enterprise plan, no proprietary fork.
