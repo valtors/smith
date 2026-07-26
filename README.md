@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-0F172A?style=flat-square)](./LICENSE)
 [![Rust](https://img.shields.io/badge/rust-1.75+-CE422B?style=flat-square)](https://www.rust-lang.org/)
 [![tests](https://img.shields.io/badge/tests-74-green?style=flat-square)]()
+[![crates.io](https://img.shields.io/crates/v/smith-mcp?style=flat-square&label=crates.io)](https://crates.io/crates/smith-mcp)
 
 npm for MCP. install, compose, secure, and manage MCP servers. one binary.
 
