@@ -8,6 +8,8 @@
 
 npm for MCP. install, compose, secure, and manage MCP servers. one binary.
 
+[landing](https://valtors.github.io/smith/) - [github](https://github.com/valtors/smith)
+
 ## what
 
 smith is the package manager for MCP servers. MCP gave agents tools. smith makes them installable.
