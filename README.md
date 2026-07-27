@@ -126,6 +126,10 @@ smith publish
 cargo test --workspace
 ```
 
+## tech
+
+`rust` `json config` `npm` `git` `MCP` `single binary` `zero runtime deps` `no daemon`
+
 ## contributing
 
 see [CONTRIBUTING.md](CONTRIBUTING.md). we welcome contributions of all kinds - bug fixes, new patterns, transport support, docs.
